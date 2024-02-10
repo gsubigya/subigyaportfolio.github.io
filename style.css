@@ -1,0 +1,44 @@
+/* styles.css */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8e5e5; /* Soft pink */
+    color: #552222;            /* Dark red */
+    text-align: center;
+    margin: 0;
+    padding: 2em;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); 
+    background-color: white;
+    padding: 20px;
+}
+
+header h1 {
+    color: #dd2255;  /* Deeper red */
+    font-size: 3em;
+}
+
+#photo-gallery {
+    /* Styling for your photo display */
+}
+
+#message {
+    margin: 20px 0;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
+button {
+    background-color: #dd2255;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
