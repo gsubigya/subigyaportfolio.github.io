@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Web Player</title>
+<style>
+.video-container {
+  position: fixed; /* Position the video container to cover half the screen */
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 50%;
+  transform: translate(-50%, -50%); /* Center the video */
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+}
+</style>
+</head>
+<body>
+<div class="video-container">
+  <iframe 
+    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&controls=0" 
+    title="Welcome" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen>
+  </iframe>
+</div>
+</body>
+</html>
