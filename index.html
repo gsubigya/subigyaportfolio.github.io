@@ -3,6 +3,11 @@
 <head>
 <title>Web Player</title>
 <style>
+  body {
+            font-family: sans-serif;
+            text-align: center;
+            margin-top: 10%;
+        }
 .video-container {
   position: fixed; /* Position the video container to cover half the screen */
   top: 50%;
@@ -19,13 +24,18 @@ iframe {
 </style>
 </head>
 <body>
+</head>
+<body>
+    <h1>Oops! Something went wrong.</h1>
+    <p id="error-code"></p> 
+    <p>We're working to fix it. Please try again later.</p>
+
+    <a href="/">Go Back Home</a>
+  
 <div class="video-container">
   <iframe 
-    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&controls=0" 
-    title="Welcome" 
-    frameborder="0" 
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-    allowfullscreen>
+    src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen" 
+  >
   </iframe>
 </div>
 </body>
