@@ -1,23 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Error Page</title>
     <style>
-        /* Basic styling - will be expanded on later */
-        body {
-            font-family: sans-serif;
-            text-align: center;
-            margin-top: 10%;
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        margin-top: 10%;
+      }
+      .gif-container {
+        width: 122px;
+        height: 152px;
+        margin: 0 auto 20px auto; /* centers and adds some space below */
+      }
+      .gif-container img {
+        width: 122px;
+        height: 152px;
+        display: block;
+        margin: 0 auto;
+      }
+      .contact-email {
+        font-style: italic;
+        margin-bottom: 10px;
         }
     </style>
-</head>
-<body>
-    <h1>Oops! Something went wrong.</h1>
-    <p id="error-code"></p> 
-    <p>We're working to fix it. Please try again later.</p>
+  </head>
+  <body>
+    <div class="gif-container">
+      <img src="nepal.gif" alt="Flag Animation" />
+    </div>
 
+    <h1>Oops! Something went wrong.</h1>
+    <p id="error-code"></p>
+    <p>We're working to fix it. Please try again later.</p>
+      
+    <p class="contact-email">Email at <a href="mailto:err@subigya.com">err@subigya.com</a></p>
     <a href="/">Go Back Home</a>
-</body>
+  </body>
 </html>
