@@ -2,43 +2,145 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Error Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Portfolio</title>
     <style>
       body {
+        background-color: #000;
+        color: #fff;
         font-family: sans-serif;
-        text-align: center;
-        margin-top: 10%;
+        margin: 40px;
       }
-      .gif-container {
-        width: 122px;
-        height: 152px;
-        margin: 0 auto 20px auto; /* centers and adds some space below */
+
+      nav {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
       }
-      .gif-container img {
-        width: 122px;
-        height: 152px;
-        display: block;
-        margin: 0 auto;
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
       }
-      .contact-email {
-        font-style: italic;
+
+      h1 {
+        font-size: 1.6em;
         margin-bottom: 10px;
-        }
+      }
+
+      .intro,
+      .featured {
+        max-width: 700px;
+        line-height: 1.6;
+      }
+
+      .featured {
+        margin-top: 40px;
+      }
+
+      .featured h2 {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+      }
+
+      .post {
+        margin-bottom: 10px;
+      }
+
+      .post-date {
+        color: #bbb;
+        margin-right: 10px;
+        font-size: 0.95em;
+      }
+
+      .post-title {
+        color: white;
+        text-decoration: none;
+      }
+
+      .footer {
+        margin-top: 50px;
+        font-size: 0.9em;
+        color: #bbb;
+      }
+
+      .footer a {
+        color: white;
+        margin-right: 15px;
+        text-decoration: none;
+      }
     </style>
   </head>
   <body>
-    <div class="gif-container">
-      <img src="nepal.gif" alt="Flag Animation" />
+    <nav>
+      <a href="index.html">home</a>
+      <a href="blogg.html">blog</a>
+    </nav>
+
+    <h1>About Me.</h1>
+    <div class="intro">
+      <p>
+        I'm a cybersecurity learner with a growing passion for ethical hacking,
+        digital privacy, and uncovering how systems can break and how to defend
+        them better. <br />
+        Whether it’s dissecting vulnerabilities, exploring real-world attack
+        vectors, or simulating threats in controlled environments, I thrive in
+        spaces where curiosity meets discipline. I’m currently diving into
+        penetration testing, red teaming, OSINT, and threat detection with a
+        strong focus on practical, hands-on learning. <br />
+        My goal isn’t just to break things it’s to understand them deeply,
+        communicate findings clearly, and contribute to a more secure digital
+        world. This portfolio showcases my journey, my projects, and my evolving
+        perspective on cybersecurity.
+      </p>
     </div>
 
-    <h1>Oops! Something went wrong.</h1>
-    <p id="error-code"></p>
-    <p>We're working to fix it. Please try again later.</p>
-      
-    <p class="contact-email"><a href="mailto:err@subigya.com">err@subigya.com</a></p>
-    <br>
-    <br>
-    <a href="https://youtu.be/Blp-yKRvrAc">Bored?</a>
+    <div class="featured">
+      <h2>Featured</h2>
+      <div class="post">
+        <span class="post-date">May 21, 2025</span>
+        <a
+          class="post-title"
+          href="https://medium.com/@subigya.com/are-phone-and-laptop-repair-shops-spying-on-us-heres-what-i-found-after-testing-it-myself-0d61496b629c"
+        >
+          Are Repair Shops Spying on us?</a
+        >
+      </div>
+      <div class="post">
+        <span class="post-date">June 12, 2025</span>
+        <a
+          class="post-title"
+          href="https://medium.com/@subigya.com/how-qr-codes-are-the-new-phishing-attack-vector-and-how-hackers-use-them-to-trick-you-6194ffbdd286"
+          >How QR Codes are the New Phishing Attack Vector.</a
+        >
+      </div>
+      <div class="post">
+        <span class="post-date">June 16, 2025</span>
+        <a
+          class="post-title"
+          href="https://medium.com/@subigya.com/the-dark-side-of-chat-apps-how-hackers-use-telegram-discord-to-control-infected-devices-cf39919da4c3"
+          >The Dark Side of Chat Apps: C2</a
+        >
+      </div>
+    </div>
+
+    <div class="footer">
+      <a
+        href="https://github.com/gsubigya"
+        target="_blank"
+        rel="noopener noreferrer"
+        >↗ github</a
+      >
+      <a
+        href="https://linkedin.com/in/subigya-ghimire"
+        target="_blank"
+        rel="noopener noreferrer"
+        >↗ linkedin</a
+      >
+      <a href="mailto:dev@subigya.com">↗ mail</a>
+      <br /><br />
+      © 2025 Subigya Ghimire
+    </div>
   </body>
 </html>
