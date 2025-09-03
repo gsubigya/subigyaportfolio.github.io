@@ -27,14 +27,18 @@
       color: #ccc;
     }
     .data-box {
-      border: 2px solid red;
-      background-color: #1a1a1a;
-      color: #ff4d4d;
+      border: 2px solid #b22222;
+      background-color: #000;
+      color: #b22222;
       padding: 20px;
       margin: 20px auto;
       text-align: left;
-      max-width: 600px;
+      max-width: 650px;
       border-radius: 8px;
+    }
+    .data-box h2 {
+      margin-top: 0;
+      color: #b22222;
     }
     .data-box p {
       margin: 8px 0;
@@ -53,7 +57,7 @@
   <h1>UNAUTHORIZED ACCESS</h1>
   <p class="note">
     You clicked this link without thinking, maybe just out of curiosity.  
-    Now look — we already have access to details about you (even without saving anything).  
+    We have logged your data and this is how hacker gather information about you.  
   </p>
 
   <div class="data-box" id="dataBox">
@@ -66,48 +70,77 @@
     <p id="screen"></p>
     <p id="colorDepth"></p>
     <p id="timezone"></p>
+    <p id="cpu"></p>
+    <p id="memory"></p>
+    <p id="touch"></p>
     <p id="battery"></p>
     <p id="conn"></p>
+    <p id="rtt"></p>
+    <p id="ip"></p>
+    <p id="isp"></p>
+    <p id="loc"></p>
   </div>
 
   <footer>
-    You are cooked, bro. We will catch you for settlement.<br>
-    Mail us at ----@---.---
+    You are cooked, bro.<br>
+    Reach me at deletemydata@subigya.com
   </footer>
 
   <script>
-    // User Agent
+    // Browser basics
     document.getElementById("ua").textContent = "User Agent: " + navigator.userAgent;
-    // Language
     document.getElementById("lang").textContent = "Language: " + navigator.language;
-    // Platform
     document.getElementById("platform").textContent = "Platform: " + navigator.platform;
-    // Cookies
     document.getElementById("cookies").textContent = "Cookies Enabled: " + navigator.cookieEnabled;
-    // Online
     document.getElementById("online").textContent = "Online Status: " + (navigator.onLine ? "Online" : "Offline");
+
     // Screen
     document.getElementById("screen").textContent = "Screen: " + screen.width + "x" + screen.height;
-    // Color Depth
     document.getElementById("colorDepth").textContent = "Color Depth: " + screen.colorDepth;
+
     // Timezone
     document.getElementById("timezone").textContent = "Timezone Offset: " + new Date().getTimezoneOffset();
+
+    // Hardware
+    document.getElementById("cpu").textContent = navigator.hardwareConcurrency ? "CPU Cores: " + navigator.hardwareConcurrency : "CPU Cores: Not Supported";
+    document.getElementById("memory").textContent = navigator.deviceMemory ? "Device Memory: " + navigator.deviceMemory + " GB" : "Device Memory: Not Supported";
+    document.getElementById("touch").textContent = "Touch Points: " + navigator.maxTouchPoints;
+
     // Battery
     if (navigator.getBattery) {
       navigator.getBattery().then(battery => {
         document.getElementById("battery").textContent = 
-          "Battery: " + Math.round(battery.level * 100) + "%, Charging: " + (battery.charging ? "Yes" : "No");
+          "Battery: " + Math.round(battery.level * 100) + "%, Charging: " + (battery.charging ? "Yes" : "No") +
+          ", Charging Time: " + (battery.chargingTime === Infinity ? "N/A" : battery.chargingTime + "s") +
+          ", Discharging Time: " + (battery.dischargingTime === Infinity ? "N/A" : battery.dischargingTime + "s");
       });
     } else {
       document.getElementById("battery").textContent = "Battery Info: Not Supported";
     }
+
     // Network
     if (navigator.connection) {
       document.getElementById("conn").textContent = 
         "Network Downlink: " + navigator.connection.downlink + " Mbps, Type: " + navigator.connection.effectiveType;
+      document.getElementById("rtt").textContent = "Network RTT: " + navigator.connection.rtt + " ms";
     } else {
       document.getElementById("conn").textContent = "Network Info: Not Supported";
+      document.getElementById("rtt").textContent = "Network RTT: Not Supported";
     }
+
+    // Public IP + ISP + Location (via free API)
+    fetch("https://ipapi.co/json/")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("ip").textContent = "Public IP: " + data.ip;
+        document.getElementById("isp").textContent = "ISP: " + data.org;
+        document.getElementById("loc").textContent = "Location: " + data.city + ", " + data.region + ", " + data.country_name;
+      })
+      .catch(() => {
+        document.getElementById("ip").textContent = "Public IP: Unable to fetch";
+        document.getElementById("isp").textContent = "ISP: Unable to fetch";
+        document.getElementById("loc").textContent = "Location: Unable to fetch";
+      });
   </script>
 </body>
 </html>
