@@ -3,147 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unauthorized Access Warning</title>
+  <title>Unauthorized Access</title>
   <style>
     body {
-      background-color: #000;
-      color: red;
       font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #eee;
       text-align: center;
-      padding: 20px;
+      padding: 30px;
     }
-    .warning {
-      font-size: 2rem;
-      font-weight: bold;
+    h1 {
+      color: red;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    .warning-icon {
+      font-size: 80px;
+      color: red;
+    }
+    .note {
       margin: 20px 0;
+      font-size: 1.1em;
+      color: #ccc;
     }
-    .triangle {
-      font-size: 5rem;
-      color: red;
-    }
-    .data {
-      margin-top: 30px;
+    .data-box {
+      border: 2px solid red;
+      background-color: #1a1a1a;
+      color: #ff4d4d;
+      padding: 20px;
+      margin: 20px auto;
       text-align: left;
-      display: inline-block;
-      font-size: 1.1rem;
-      line-height: 1.6;
-      color: red;
+      max-width: 600px;
+      border-radius: 8px;
+    }
+    .data-box p {
+      margin: 8px 0;
+      font-family: monospace;
+      font-size: 0.95em;
     }
     footer {
       margin-top: 40px;
-      font-size: 1rem;
-      font-weight: bold;
+      font-size: 1em;
       color: red;
     }
   </style>
 </head>
 <body>
-  <div class="triangle">⚠️</div>
-  <div class="warning">UNAUTHORIZED ACCESS</div>
-  <p>
-    You clicked without thinking, or maybe just out of curiosity.<br>
-    Session Logged!, we already know almost everything about you now.<br>
+  <div class="warning-icon">⚠️</div>
+  <h1>UNAUTHORIZED ACCESS</h1>
+  <p class="note">
+    You clicked this link without thinking, maybe just out of curiosity.  
+    Now look — we already have access to details about you (even without saving anything).  
   </p>
 
-  <div class="data" id="data"></div>
-  <div class="data" id="motion"></div>
+  <div class="data-box" id="dataBox">
+    <h2>Captured Information:</h2>
+    <p id="ua"></p>
+    <p id="lang"></p>
+    <p id="platform"></p>
+    <p id="cookies"></p>
+    <p id="online"></p>
+    <p id="screen"></p>
+    <p id="colorDepth"></p>
+    <p id="timezone"></p>
+    <p id="battery"></p>
+    <p id="conn"></p>
+  </div>
 
   <footer>
-    You are cooked bro.<br>
-    We will catch you for settlement.<br>
-    Mail us at <b>log@subigya.com</b>
+    You are cooked, bro. We will catch you for settlement.<br>
+    Mail us at ----@---.---
   </footer>
 
   <script>
-    async function getData() {
-      let output = "";
-
-      // Browser & OS
-      output += `<b>Browser & OS:</b> ${navigator.userAgent}<br>`;
-      output += `<b>Language:</b> ${navigator.language}<br>`;
-      output += `<b>Timezone:</b> ${Intl.DateTimeFormat().resolvedOptions().timeZone}<br>`;
-      output += `<b>Cookies Enabled:</b> ${navigator.cookieEnabled}<br>`;
-
-      // Screen
-      output += `<b>Screen Resolution:</b> ${screen.width} x ${screen.height}<br>`;
-      output += `<b>Available Screen:</b> ${screen.availWidth} x ${screen.availHeight}<br>`;
-      output += `<b>Color Depth:</b> ${screen.colorDepth}<br>`;
-      output += `<b>Pixel Ratio:</b> ${window.devicePixelRatio}<br>`;
-      output += `<b>Orientation:</b> ${screen.orientation.type}<br>`;
-
-      // Hardware
-      if (navigator.hardwareConcurrency) {
-        output += `<b>CPU Cores:</b> ${navigator.hardwareConcurrency}<br>`;
-      }
-      if (navigator.deviceMemory) {
-        output += `<b>Device Memory (approx GB):</b> ${navigator.deviceMemory}<br>`;
-      }
-      output += `<b>Touch Points:</b> ${navigator.maxTouchPoints}<br>`;
-
-      // Network
-      if (navigator.connection) {
-        output += `<b>Network Type:</b> ${navigator.connection.effectiveType}<br>`;
-        output += `<b>Downlink Speed (Mbps):</b> ${navigator.connection.downlink}<br>`;
-        output += `<b>RTT (ms):</b> ${navigator.connection.rtt}<br>`;
-      }
-      output += `<b>Online Status:</b> ${navigator.onLine}<br>`;
-
-      // Battery
-      if (navigator.getBattery) {
-        const battery = await navigator.getBattery();
-        output += `<b>Battery Level:</b> ${(battery.level * 100).toFixed(0)}%<br>`;
-        output += `<b>Charging:</b> ${battery.charging}<br>`;
-      }
-
-      // Referrer
-      output += `<b>Referrer:</b> ${document.referrer || "Direct"}<br>`;
-
-      // IP & location (via free API)
-      try {
-        const res = await fetch("https://ipapi.co/json/");
-        const ipData = await res.json();
-        output += `<b>IP Address:</b> ${ipData.ip}<br>`;
-        output += `<b>City:</b> ${ipData.city}<br>`;
-        output += `<b>Region:</b> ${ipData.region}<br>`;
-        output += `<b>Country:</b> ${ipData.country_name}<br>`;
-        output += `<b>ISP:</b> ${ipData.org}<br>`;
-      } catch (e) {
-        output += `<b>IP & Location:</b> Could not fetch<br>`;
-      }
-
-      document.getElementById("data").innerHTML = output;
+    // User Agent
+    document.getElementById("ua").textContent = "User Agent: " + navigator.userAgent;
+    // Language
+    document.getElementById("lang").textContent = "Language: " + navigator.language;
+    // Platform
+    document.getElementById("platform").textContent = "Platform: " + navigator.platform;
+    // Cookies
+    document.getElementById("cookies").textContent = "Cookies Enabled: " + navigator.cookieEnabled;
+    // Online
+    document.getElementById("online").textContent = "Online Status: " + (navigator.onLine ? "Online" : "Offline");
+    // Screen
+    document.getElementById("screen").textContent = "Screen: " + screen.width + "x" + screen.height;
+    // Color Depth
+    document.getElementById("colorDepth").textContent = "Color Depth: " + screen.colorDepth;
+    // Timezone
+    document.getElementById("timezone").textContent = "Timezone Offset: " + new Date().getTimezoneOffset();
+    // Battery
+    if (navigator.getBattery) {
+      navigator.getBattery().then(battery => {
+        document.getElementById("battery").textContent = 
+          "Battery: " + Math.round(battery.level * 100) + "%, Charging: " + (battery.charging ? "Yes" : "No");
+      });
+    } else {
+      document.getElementById("battery").textContent = "Battery Info: Not Supported";
     }
-
-    getData();
-
-    // Motion & Orientation Tracking
-    function setupMotionSensors() {
-      if (window.DeviceOrientationEvent) {
-        window.addEventListener("deviceorientation", (event) => {
-          const { alpha, beta, gamma } = event;
-          document.getElementById("motion").innerHTML =
-            `<b>Orientation:</b><br>
-             Rotation α (Z-axis): ${alpha?.toFixed(2)}°<br>
-             Tilt β (X-axis): ${beta?.toFixed(2)}°<br>
-             Tilt γ (Y-axis): ${gamma?.toFixed(2)}°<br>`;
-        });
-      }
-
-      if (window.DeviceMotionEvent) {
-        window.addEventListener("devicemotion", (event) => {
-          const acc = event.acceleration;
-          if (acc) {
-            document.getElementById("motion").innerHTML +=
-              `<br><b>Motion (Acceleration):</b><br>
-               X: ${acc.x?.toFixed(2)} m/s²<br>
-               Y: ${acc.y?.toFixed(2)} m/s²<br>
-               Z: ${acc.z?.toFixed(2)} m/s²<br>`;
-          }
-        });
-      }
+    // Network
+    if (navigator.connection) {
+      document.getElementById("conn").textContent = 
+        "Network Downlink: " + navigator.connection.downlink + " Mbps, Type: " + navigator.connection.effectiveType;
+    } else {
+      document.getElementById("conn").textContent = "Network Info: Not Supported";
     }
-
-    setupMotionSensors();
   </script>
 </body>
 </html>
