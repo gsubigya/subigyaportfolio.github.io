@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Dashboard</title>
+    <style>
+        /* Design System CSS */
+        :root {
+          /* Primitive Color Tokens */
+          --color-white: rgba(255, 255, 255, 1);
+          --color-black: rgba(0, 0, 0, 1);
+          --color-cream-50: rgba(252, 252, 249, 1);
+          --color-cream-100: rgba(255, 255, 253, 1);
+          --color-gray-200: rgba(245, 245, 245, 1);
+          --color-gray-300: rgba(167, 169, 169, 1);
+          --color-gray-400: rgba(119, 124, 124, 1);
+          --color-slate-500: rgba(98, 108, 113, 1);
+          --color-brown-600: rgba(94, 82, 64, 1);
+          --color-charcoal-700: rgba(31, 33, 33, 1);
+          --color-charcoal-800: rgba(38, 40, 40, 1);
+          --color-slate-900: rgba(19, 52, 59, 1);
+          --color-teal-300: rgba(50, 184, 198, 1);
+          --color-teal-400: rgba(45, 166, 178, 1);
+          --color-teal-500: rgba(33, 128, 141, 1);
+          --color-teal-600: rgba(29, 116, 128, 1);
+          --color-teal-700: rgba(26, 104, 115, 1);
+          --color-teal-800: rgba(41, 150, 161, 1);
+          --color-red-400: rgba(255, 84, 89, 1);
+          --color-red-500: rgba(192, 21, 47, 1);
+          --color-orange-400: rgba(230, 129, 97, 1);
+          --color-orange-500: rgba(168, 75, 47, 1);
+        
+          /* RGB versions for opacity control */
+          --color-brown-600-rgb: 94, 82, 64;
+          --color-teal-500-rgb: 33, 128, 141;
+          --color-slate-900-rgb: 19, 52, 59;
+          --color-slate-500-rgb: 98, 108, 113;
+          --color-red-500-rgb: 192, 21, 47;
+          --color-red-400-rgb: 255, 84, 89;
+          --color-orange-500-rgb: 168, 75, 47;
+          --color-orange-400-rgb: 230, 129, 97;
+        
+          /* Background color tokens (Light Mode) */
+          --color-bg-1: rgba(59, 130, 246, 0.08);
+          --color-bg-2: rgba(245, 158, 11, 0.08);
+          --color-bg-3: rgba(34, 197, 94, 0.08);
+          --color-bg-4: rgba(239, 68, 68, 0.08);
+          --color-bg-5: rgba(147, 51, 234, 0.08);
+          --color-bg-6: rgba(249, 115, 22, 0.08);
+          --color-bg-7: rgba(236, 72, 153, 0.08);
+          --color-bg-8: rgba(6, 182, 212, 0.08);
+        
+          /* Semantic Color Tokens (Light Mode) */
+          --color-background: var(--color-cream-50);
+          --color-surface: var(--color-cream-100);
+          --color-text: var(--color-slate-900);
+          --color-text-secondary: var(--color-slate-500);
+          --color-primary: var(--color-teal-500);
+          --color-primary-hover: var(--color-teal-600);
+          --color-primary-active: var(--color-teal-700);
+          --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+          --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+          --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+          --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+          --color-btn-primary-text: var(--color-cream-50);
+          --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+          --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+          --color-error: var(--color-red-500);
+          --color-success: var(--color-teal-500);
+          --color-warning: var(--color-orange-500);
+          --color-info: var(--color-slate-500);
+          --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+          --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
+        
+          /* Typography */
+          --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system,
+            BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo,
+            Monaco, Consolas, monospace;
+          --font-size-xs: 11px;
+          --font-size-sm: 12px;
+          --font-size-base: 14px;
+          --font-size-md: 14px;
+          --font-size-lg: 16px;
+          --font-size-xl: 18px;
+          --font-size-2xl: 20px;
+          --font-size-3xl: 24px;
+          --font-size-4xl: 30px;
+          --font-weight-normal: 400;
+          --font-weight-medium: 500;
+          --font-weight-semibold: 550;
+          --font-weight-bold: 600;
+          --line-height-tight: 1.2;
+          --line-height-normal: 1.5;
+          --letter-spacing-tight: -0.01em;
+        
+          /* Spacing */
+          --space-0: 0;
+          --space-1: 1px;
+          --space-2: 2px;
+          --space-4: 4px;
+          --space-6: 6px;
+          --space-8: 8px;
+          --space-10: 10px;
+          --space-12: 12px;
+          --space-16: 16px;
+          --space-20: 20px;
+          --space-24: 24px;
+          --space-32: 32px;
+        
+          /* Border Radius */
+          --radius-sm: 6px;
+          --radius-base: 8px;
+          --radius-md: 10px;
+          --radius-lg: 12px;
+          --radius-full: 9999px;
+        
+          /* Animation */
+          --duration-fast: 150ms;
+          --duration-normal: 250ms;
+          --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        /* Dark mode colors */
+        @media (prefers-color-scheme: dark) {
+          :root {
+            --color-gray-400-rgb: 119, 124, 124;
+            --color-teal-300-rgb: 50, 184, 198;
+            --color-gray-300-rgb: 167, 169, 169;
+            --color-gray-200-rgb: 245, 245, 245;
+        
+            --color-background: var(--color-charcoal-700);
+            --color-surface: var(--color-charcoal-800);
+            --color-text: var(--color-gray-200);
+            --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+            --color-primary: var(--color-teal-300);
+            --color-primary-hover: var(--color-teal-400);
+            --color-primary-active: var(--color-teal-800);
+            --color-error: var(--color-red-400);
+            --color-success: var(--color-teal-300);
+            --color-warning: var(--color-orange-400);
+            --color-info: var(--color-gray-300);
+            --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+          }
+        }
+        
+        @font-face {
+          font-family: 'FKGroteskNeue';
+          src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2')
+            format('woff2');
+        }
+        
+        /* Base styles */
+        html {
+          font-size: var(--font-size-base);
+          font-family: var(--font-family-base);
+          line-height: var(--line-height-normal);
+          color: var(--color-text);
+          background-color: var(--color-background);
+          -webkit-font-smoothing: antialiased;
+          box-sizing: border-box;
+        }
+        
+        body {
+          margin: 0;
+          padding: 0;
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: linear-gradient(135deg, 
+            rgba(99, 102, 241, 0.1) 0%, 
+            rgba(168, 85, 247, 0.08) 25%, 
+            rgba(236, 72, 153, 0.06) 50%, 
+            rgba(59, 130, 246, 0.08) 75%, 
+            rgba(16, 185, 129, 0.1) 100%);
+          position: relative;
+          animation: gradientShift 20s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+          0%, 100% {
+            background: linear-gradient(135deg, 
+              rgba(99, 102, 241, 0.1) 0%, 
+              rgba(168, 85, 247, 0.08) 25%, 
+              rgba(236, 72, 153, 0.06) 50%, 
+              rgba(59, 130, 246, 0.08) 75%, 
+              rgba(16, 185, 129, 0.1) 100%);
+          }
+          50% {
+            background: linear-gradient(135deg, 
+              rgba(16, 185, 129, 0.1) 0%, 
+              rgba(59, 130, 246, 0.08) 25%, 
+              rgba(236, 72, 153, 0.06) 50%, 
+              rgba(168, 85, 247, 0.08) 75%, 
+              rgba(99, 102, 241, 0.1) 100%);
+          }
+        }
+        
+        @media (prefers-color-scheme: dark) {
+          body {
+            background: linear-gradient(135deg, 
+              rgba(55, 65, 81, 0.8) 0%, 
+              rgba(75, 85, 99, 0.6) 25%, 
+              rgba(107, 114, 128, 0.4) 50%, 
+              rgba(75, 85, 99, 0.6) 75%, 
+              rgba(55, 65, 81, 0.8) 100%);
+            animation: gradientShiftDark 20s ease-in-out infinite;
+          }
+        }
+        
+        @keyframes gradientShiftDark {
+          0%, 100% {
+            background: linear-gradient(135deg, 
+              rgba(55, 65, 81, 0.8) 0%, 
+              rgba(75, 85, 99, 0.6) 25%, 
+              rgba(107, 114, 128, 0.4) 50%, 
+              rgba(75, 85, 99, 0.6) 75%, 
+              rgba(55, 65, 81, 0.8) 100%);
+          }
+          50% {
+            background: linear-gradient(135deg, 
+              rgba(107, 114, 128, 0.4) 0%, 
+              rgba(75, 85, 99, 0.6) 25%, 
+              rgba(55, 65, 81, 0.8) 50%, 
+              rgba(75, 85, 99, 0.6) 75%, 
+              rgba(107, 114, 128, 0.4) 100%);
+          }
+        }
+        
+        .container {
+          text-align: center;
+          max-width: 900px;
+          padding: var(--space-32);
+          width: 100%;
+        }
+        
+        .clocks-container {
+          display: flex;
+          justify-content: center;
+          gap: var(--space-32);
+          margin-bottom: var(--space-32);
+          flex-wrap: wrap;
+        }
+        
+        .clock {
+          text-align: center;
+          padding: var(--space-20);
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: var(--radius-lg);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+          min-width: 280px;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+          .clock {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+          }
+        }
+        
+        .clock-label {
+          font-size: var(--font-size-sm);
+          font-weight: var(--font-weight-semibold);
+          color: var(--color-text-secondary);
+          margin-bottom: var(--space-8);
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+        }
+        
+        .time {
+          font-size: clamp(2rem, 6vw, 3.5rem);
+          font-weight: var(--font-weight-bold);
+          color: var(--color-text);
+          margin-bottom: var(--space-8);
+          letter-spacing: var(--letter-spacing-tight);
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          font-family: var(--font-family-mono);
+        }
+        
+        .date-info {
+          text-align: center;
+          margin-bottom: var(--space-32);
+          padding: var(--space-20);
+          background: rgba(255, 255, 255, 0.08);
+          border-radius: var(--radius-lg);
+          backdrop-filter: blur(5px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        @media (prefers-color-scheme: dark) {
+          .date-info {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+          }
+        }
+        
+        .date {
+          font-size: clamp(var(--font-size-lg), 3vw, var(--font-size-2xl));
+          color: var(--color-text);
+          font-weight: var(--font-weight-semibold);
+          margin-bottom: var(--space-8);
+        }
+        
+        .week-info {
+          font-size: var(--font-size-base);
+          color: var(--color-text-secondary);
+          font-weight: var(--font-weight-medium);
+        }
+        
+        .quote-container {
+          position: relative;
+          min-height: 140px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: var(--space-24);
+        }
+        
+        .quote {
+          position: absolute;
+          opacity: 0;
+          transition: opacity 1s var(--ease-standard);
+          max-width: 700px;
+          width: 100%;
+        }
+        
+        .quote.active {
+          opacity: 1;
+        }
+        
+        .quote-text {
+          font-size: clamp(var(--font-size-xl), 4vw, var(--font-size-3xl));
+          color: var(--color-text);
+          font-style: italic;
+          margin-bottom: var(--space-16);
+          line-height: 1.4;
+          font-weight: var(--font-weight-normal);
+        }
+        
+        .quote-author {
+          font-size: clamp(var(--font-size-base), 2.5vw, var(--font-size-lg));
+          color: var(--color-text-secondary);
+          font-weight: var(--font-weight-semibold);
+          position: relative;
+        }
+        
+        .quote-author::before {
+          content: "— ";
+          opacity: 0.7;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+          .container {
+            padding: var(--space-16);
+          }
+          
+          .clocks-container {
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-16);
+          }
+          
+          .clock {
+            min-width: auto;
+            width: 100%;
+            max-width: 300px;
+          }
+          
+          .quote-container {
+            min-height: 120px;
+            padding: var(--space-16);
+          }
+        }
+        
+        /* Subtle animation for the entire container */
+        .container {
+          animation: fadeIn 1s var(--ease-standard);
+        }
+        
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="clocks-container">
+            <div class="clock">
+                <div class="clock-label">Local Time</div>
+                <div class="time" id="local-time">00:00:00 AM</div>
+            </div>
+            <div class="clock">
+                <div class="clock-label">UTC Time</div>
+                <div class="time" id="utc-time">00:00:00 AM</div>
+            </div>
+        </div>
+        
+        <div class="date-info">
+            <div class="date" id="date">Loading...</div>
+            <div class="week-info" id="week-info">Loading...</div>
+        </div>
+        
+        <div class="quote-container">
+            <div class="quote active" id="current-quote">
+                <div class="quote-text">"Loading inspiration..."</div>
+                <div class="quote-author">System</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quotes = [
+            { quote: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+            { quote: "Focus on being productive instead of busy.", author: "Tim Ferriss" },
+            { quote: "Your time is limited, don't waste it living someone else's life.", author: "Steve Jobs" },
+            { quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+            { quote: "Success is walking from failure to failure with no loss of enthusiasm.", author: "Winston Churchill" },
+            { quote: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
+            { quote: "What you focus on in your life grows.", author: "Robin Sharma" },
+            { quote: "Action is the foundational key to all success.", author: "Pablo Picasso" },
+            { quote: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+            { quote: "Productivity is never an accident. It is always the result of a commitment to excellence, intelligent planning, and focused effort.", author: "Paul J. Meyer" },
+            { quote: "The successful warrior is the average man, with laser-like focus.", author: "Bruce Lee" },
+            { quote: "You don't need more time, you just need to decide.", author: "Seth Godin" },
+            { quote: "Concentrate all your thoughts upon the work at hand. The sun's rays do not burn until brought to a focus.", author: "Alexander Graham Bell" },
+            { quote: "People with goals succeed because they know where they are going.", author: "Earl Nightingale" },
+            { quote: "Success isn't overnight. It's when everyday you get a little better than the day before. It all adds up.", author: "Dwayne Johnson" },
+            { quote: "It always seems impossible until it's done.", author: "Nelson Mandela" },
+            { quote: "The future depends on what you do today.", author: "Mahatma Gandhi" },
+            { quote: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt" },
+            { quote: "Energy and persistence conquer all things.", author: "Benjamin Franklin" },
+            { quote: "The journey of a thousand miles begins with one step.", author: "Lao Tzu" },
+            { quote: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+            { quote: "Whether you think you can or think you can't, you're right.", author: "Henry Ford" },
+            { quote: "Done is better than perfect.", author: "Sheryl Sandberg" },
+            { quote: "The best way to predict the future is to create it.", author: "Peter Drucker" },
+            { quote: "Success usually comes to those who are too busy to be looking for it.", author: "Henry David Thoreau" },
+            { quote: "Nothing is impossible, the word itself says 'I'm possible'!", author: "Audrey Hepburn" },
+            { quote: "The only limit to our realization of tomorrow will be our doubts of today.", author: "Franklin D. Roosevelt" },
+            { quote: "If you can dream it, you can do it.", author: "Walt Disney" },
+            { quote: "The mind is everything. What you think you become.", author: "Buddha" },
+            { quote: "Start where you are. Use what you have. Do what you can.", author: "Arthur Ashe" },
+            { quote: "Fall seven times and stand up eight.", author: "Japanese Proverb" },
+            { quote: "Everything you want is on the other side of fear.", author: "Jack Canfield" },
+            { quote: "Happiness is not something readymade. It comes from your own actions.", author: "Dalai Lama" },
+            { quote: "The pessimist sees difficulty in every opportunity. The optimist sees opportunity in every difficulty.", author: "Winston Churchill" },
+            { quote: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+            { quote: "A successful man is one who can lay a firm foundation with the bricks others have thrown at him.", author: "David Brinkley" },
+            { quote: "No one can make you feel inferior without your consent.", author: "Eleanor Roosevelt" },
+            { quote: "Don't count the days, make the days count.", author: "Muhammad Ali" },
+            { quote: "The harder you work for something, the greater you'll feel when you achieve it.", author: "Unknown" },
+            { quote: "Little things make big days.", author: "Unknown" },
+            { quote: "It's going to be hard, but hard does not mean impossible.", author: "Unknown" },
+            { quote: "Sometimes later becomes never. Do it now.", author: "Unknown" },
+            { quote: "Push yourself, because no one else is going to do it for you.", author: "Unknown" },
+            { quote: "The key to success is to focus on goals, not obstacles.", author: "Unknown" },
+            { quote: "Don't stop when you're tired. Stop when you're done.", author: "Unknown" },
+            { quote: "Wake up with determination. Go to bed with satisfaction.", author: "Unknown" },
+            { quote: "Do something today that your future self will thank you for.", author: "Unknown" },
+            { quote: "Don't wait for opportunity. Create it.", author: "Unknown" },
+            { quote: "Great things never come from comfort zones.", author: "Unknown" },
+            { quote: "The only person you should try to be better than is the person you were yesterday.", author: "Unknown" },
+            { quote: "If you are not willing to risk the usual, you will have to settle for the ordinary.", author: "Jim Rohn" },
+            { quote: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb" },
+            { quote: "Either you run the day, or the day runs you.", author: "Jim Rohn" },
+            { quote: "I am not a product of my circumstances. I am a product of my decisions.", author: "Stephen Covey" },
+            { quote: "The two most important days in your life are the day you are born and the day you find out why.", author: "Mark Twain" },
+            { quote: "Whatever you can do, or dream you can, begin it. Boldness has genius, power, and magic in it.", author: "Johann Wolfgang von Goethe" },
+            { quote: "Do today what others won't and achieve tomorrow what others can't.", author: "Jerry Rice" },
+            { quote: "I never dreamed about success, I worked for it.", author: "Estée Lauder" },
+            { quote: "Don't let the fear of losing be greater than the excitement of winning.", author: "Robert Kiyosaki" },
+            { quote: "The secret of success is to do the common thing uncommonly well.", author: "John D. Rockefeller Jr." },
+            { quote: "You don't have to see the whole staircase, just take the first step.", author: "Martin Luther King Jr." },
+            { quote: "There's no elevator to success. You have to take the stairs.", author: "Zig Ziglar" },
+            { quote: "Success is not the absence of failure, it's persistence through failure.", author: "Aisha Tyler" },
+            { quote: "Great achievement is usually born of great sacrifice, and is never the result of selfishness.", author: "Napoleon Hill" },
+            { quote: "Hard work beats talent when talent doesn't work hard.", author: "Tim Notke" },
+            { quote: "I find that the harder I work, the more luck I seem to have.", author: "Thomas Jefferson" },
+            { quote: "Work hard in silence, let your success be your noise.", author: "Frank Ocean" },
+            { quote: "The harder the struggle, the more glorious the triumph.", author: "Swami Sivananda" },
+            { quote: "Successful people are not gifted; they just work hard, and then succeed on purpose.", author: "G.K. Nielson" },
+            { quote: "The most certain way to succeed is always to try just one more time.", author: "Thomas Edison" },
+            { quote: "Perseverance is not a long race; it is many short races one after the other.", author: "Walter Elliot" },
+            { quote: "Time is what we want most, but what we use worst.", author: "William Penn" },
+            { quote: "The key is not to prioritize what's on your schedule, but to schedule your priorities.", author: "Stephen Covey" },
+            { quote: "Ordinary people think merely of spending time, great people think of using it.", author: "Arthur Schopenhauer" },
+            { quote: "Procrastination is the art of keeping up with yesterday.", author: "Don Marquis" },
+            { quote: "Do not wait; the time will never be 'just right.' Start where you stand.", author: "Napoleon Hill" },
+            { quote: "Amateurs sit and wait for inspiration, the rest of us just get up and go to work.", author: "Stephen King" },
+            { quote: "It's not always that we need to do more but rather that we need to focus on less.", author: "Nathan W. Morris" },
+            { quote: "If you spend too much time thinking about a thing, you'll never get it done.", author: "Bruce Lee" },
+            { quote: "Don't measure your productivity by how much you get done, but by the quality and impact of what you accomplish.", author: "Stephen R. Covey" },
+            { quote: "Being overwhelmed is often the result of failing to set priorities. Work smarter, not harder.", author: "Brian Tracy" },
+            { quote: "True productivity comes from focusing on what energizes you and eliminating tasks that drain your motivation.", author: "Scott Belsky" },
+            { quote: "The biggest room in the world is the room for improvement.", author: "Helmut Schmidt" },
+            { quote: "I have learned over the years that when one's mind is made up, this diminishes fear.", author: "Rosa Parks" },
+            { quote: "Our lives begin to end the day we become silent about things that matter.", author: "Martin Luther King Jr." },
+            { quote: "The most common way people give up their power is by thinking they don't have any.", author: "Alice Walker" },
+            { quote: "A person who never made a mistake never tried anything new.", author: "Albert Einstein" },
+            { quote: "Dream big and dare to fail.", author: "Norman Vaughan" },
+            { quote: "Our greatest fear should not be of failure but of succeeding at things in life that don't really matter.", author: "Francis Chan" },
+            { quote: "It's not the years in your life that count. It's the life in your years.", author: "Abraham Lincoln" },
+            { quote: "Change your thoughts and you change your world.", author: "Norman Vincent Peale" },
+            { quote: "What you do speaks so loudly that I cannot hear what you say.", author: "Ralph Waldo Emerson" },
+            { quote: "Do one thing every day that scares you.", author: "Eleanor Roosevelt" },
+            { quote: "All progress takes place outside the comfort zone.", author: "Michael John Bobak" },
+            { quote: "If you really look closely, most overnight successes took a long time.", author: "Steve Jobs" },
+            { quote: "The only place where dreams are impossible is in your own mind.", author: "Emilee Rivera" },
+            { quote: "A comfort zone is a beautiful place, but nothing ever grows there.", author: "Unknown" },
+            { quote: "You can't get to a place that you don't believe exists.", author: "Unknown" },
+            { quote: "Not everything that weighs you down is yours to carry.", author: "Unknown" },
+            { quote: "Greatest success comes just one step beyond the point at which defeat overtakes you.", author: "Unknown" },
+            { quote: "Only those who do nothing at all make no mistakes.", author: "Unknown" },
+            { quote: "The consequences of today are determined by the actions of the past. To change your future, alter your decisions today.", author: "Unknown" },
+            { quote: "If you want to achieve greatness stop asking for permission.", author: "Unknown" },
+            { quote: "Knowledge is learning something everyday. Wisdom is letting go of something everyday.", author: "Unknown" },
+            { quote: "The first step toward getting somewhere is to decide that you are not going to stay where you are.", author: "Unknown" },
+            { quote: "Confuse them with your silence and amaze them with your actions.", author: "Unknown" },
+            { quote: "Avoiding failure is to avoid progress.", author: "Unknown" },
+            { quote: "We make a living by what we get, but we make a life by what we give.", author: "Unknown" },
+            { quote: "Winners don't quit. That's why they win.", author: "Unknown" },
+            { quote: "Why compare yourself with others? No one in the entire world can do a better job of being you than you.", author: "Unknown" }
+        ];
+        
+        let currentQuoteIndex = 0;
+        let usedQuoteIndexes = [];
+        
+        function getWeekNumber(date) {
+            const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+            const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+            return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+        }
+        
+        function updateTime() {
+            const now = new Date();
+            
+            // Local time in 12-hour format
+            const localTimeString = now.toLocaleTimeString('en-US', { 
+                hour12: true,
+                hour: 'numeric',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            // UTC time in 12-hour format
+            const utcTimeString = now.toLocaleTimeString('en-US', { 
+                hour12: true,
+                hour: 'numeric',
+                minute: '2-digit',
+                second: '2-digit',
+                timeZone: 'UTC'
+            });
+            
+            const dateString = now.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            const weekNumber = getWeekNumber(now);
+            const weekString = `Week ${weekNumber} of ${now.getFullYear()}`;
+            
+            document.getElementById('local-time').textContent = localTimeString;
+            document.getElementById('utc-time').textContent = utcTimeString;
+            document.getElementById('date').textContent = dateString;
+            document.getElementById('week-info').textContent = weekString;
+        }
+        
+        function updateQuote() {
+            const quoteElement = document.getElementById('current-quote');
+            
+            // Reset used indexes if we've used all quotes
+            if (usedQuoteIndexes.length >= quotes.length) {
+                usedQuoteIndexes = [];
+            }
+            
+            // Find a quote we haven't used recently
+            let newQuoteIndex;
+            do {
+                newQuoteIndex = Math.floor(Math.random() * quotes.length);
+            } while (usedQuoteIndexes.includes(newQuoteIndex) && usedQuoteIndexes.length < quotes.length);
+            
+            usedQuoteIndexes.push(newQuoteIndex);
+            const currentQuote = quotes[newQuoteIndex];
+            
+            // Fade out current quote
+            quoteElement.classList.remove('active');
+            
+            // Wait for fade out, then update content and fade in
+            setTimeout(() => {
+                quoteElement.querySelector('.quote-text').textContent = `"${currentQuote.quote}"`;
+                quoteElement.querySelector('.quote-author').textContent = currentQuote.author;
+                quoteElement.classList.add('active');
+            }, 500);
+        }
+        
+        // Initialize immediately
+        updateTime();
+        
+        // Show first quote after a brief delay
+        setTimeout(() => {
+            updateQuote();
+        }, 1000);
+        
+        // Update time every second
+        setInterval(updateTime, 1000);
+        
+        // Update quote every 45 seconds
+        setInterval(updateQuote, 45000);
+    </script>
+</body>
+</html>
