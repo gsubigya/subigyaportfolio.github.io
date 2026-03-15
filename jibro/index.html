@@ -255,6 +255,7 @@
     /* Hero Visual */
     .hero-visual {
       position: relative;
+      width:100%
     }
 
     .hero-card-main {
@@ -314,7 +315,7 @@
     }
 
     .hero-card-float {
-      position: absolute;
+      position: relative;
       background: var(--bg-card);
       border-radius: 14px;
       padding: 16px 20px;
@@ -816,7 +817,7 @@
       <li><a href="#process">How We Work</a></li>
       <li><a href="#why">Why Us</a></li>
       <li><a href="#industries">Industries</a></li>
-      <li><a href="#" class="nav-cta">Book a Call</a></li>
+      <li><a href="https://subigya.com/schedule" class="nav-cta">Book a Call</a></li>
     </ul>
     <div class="hamburger" onclick="toggleMenu()" id="ham">
       <span></span><span></span><span></span>
@@ -829,7 +830,7 @@
     <a href="#process" onclick="toggleMenu()">How We Work</a>
     <a href="#why" onclick="toggleMenu()">Why Us</a>
     <a href="#industries" onclick="toggleMenu()">Industries</a>
-    <a href="#" class="m-cta" onclick="toggleMenu()">📅 Book a Free Call</a>
+    <a href="https://subigya.com/schedule" class="m-cta" onclick="toggleMenu()">📅 Book a Free Call</a>
   </div>
 
   <!-- HERO -->
@@ -875,7 +876,8 @@
 
       <div class="hero-visual fade-up" style="transition-delay: 0.15s;">
         <div style="position: relative; padding: 60px 20px 60px 20px;">
-          <div class="hero-card-float float-1">
+          <!--<div class="hero-card-float float-1">-->
+          <div class="hero-visual-inner">
             <div class="float-label">Monthly ROAS</div>
             <div class="float-value">4.8×</div>
             <div class="float-sub">↑ 23% vs last month</div>
@@ -1121,7 +1123,7 @@
         <p class="section-desc" style="color:rgba(255,255,255,0.7);">Book a free 30-minute strategy call. We'll audit your current marketing, identify the biggest growth opportunities, and show you exactly what we'd do before you commit to anything.</p>
       </div>
       <div class="cta-actions">
-        <a href="#" class="btn-white">
+        <a href="https://subigya.com/schedule" class="btn-white">
           📅 Book Free Strategy Call
         </a>
         <a href="mailto:hello@jibrotechnology.com" class="btn-ghost-white">
@@ -1235,7 +1237,7 @@
       e.preventDefault();
       //Replace with your Calendly link:
       window.open('https://subigya.com/schedule', '_blank');
-      alert('redirecting');
+      //alert('redirecting');
     });
 
     // Smooth nav link behavior
