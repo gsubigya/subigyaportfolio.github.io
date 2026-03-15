@@ -4,6 +4,30 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jibro Technology: Digital Growth Agency</title>
+
+  <!-- ── FAVICON ── -->
+  <link rel="icon" type="image/svg+xml" href="https://subigya.com/jibro/img/logo-icon.svg" />
+
+  <!-- ── OPEN GRAPH ── -->
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://subigya.com/jibro" />
+  <meta property="og:title"        content="Jibro Technology: Digital Growth Agency" />
+  <meta property="og:description"  content="We combine paid advertising, SEO, content, and social media into one unified growth strategy that converts visitors into paying customers — consistently." />
+  <meta property="og:image"        content="https://subigya.com/jibro/img/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name"    content="Jibro Technology Pvt. Ltd." />
+
+  <!-- ── TWITTER / X ── -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Jibro Technology: Digital Growth Agency" />
+  <meta name="twitter:description" content="Paid Ads · SEO · Email Marketing · Social Media — We build growth systems, not just run ads." />
+  <meta name="twitter:image"       content="https://subigya.com/jibro/img/og-image.png" />
+
+  <!-- ── SEO ── -->
+  <meta name="description" content="Jibro Technology is a digital marketing agency specialising in Meta & Google Ads, SEO, email marketing, and social media built for businesses that want real, measurable growth." />
+  <meta name="author"      content="Jibro Technology Pvt. Ltd." />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
@@ -50,10 +74,15 @@
       height: 64px;
     }
     .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    /* ── LOGO MARK: replaced JT text with SVG icon ── */
     .logo-mark {
-      width: 34px; height: 34px; background: var(--accent); border-radius: 9px;
+      width: 34px; height: 34px;
+      flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
-      color: #fff; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; flex-shrink: 0;
+    }
+    .logo-mark img {
+      width: 34px; height: 34px;
+      display: block;
     }
     .logo-text { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 17px; color: var(--text-primary); letter-spacing: -0.3px; }
     .logo-sub { font-size: 10px; font-weight: 400; color: var(--text-light); letter-spacing: 0.8px; text-transform: uppercase; display: block; line-height: 1; margin-top: 1px; }
@@ -278,7 +307,10 @@
   <!-- NAV -->
   <nav>
     <a href="#" class="nav-logo">
-      <div class="logo-mark">JT</div>
+      <!-- CHANGED: was <div class="logo-mark">JT</div>, now uses logo-icon.svg -->
+      <div class="logo-mark">
+        <img src="logo-icon.svg" alt="Jibro Technology" />
+      </div>
       <div>
         <div class="logo-text">Jibro Technology</div>
         <!--<span class="logo-sub">Pvt. Ltd.</span>-->
@@ -563,7 +595,10 @@
       <div class="footer-top">
         <div class="footer-brand">
           <div class="nav-logo" style="pointer-events:none;">
-            <div class="logo-mark">JT</div>
+            <!-- CHANGED: was <div class="logo-mark">JT</div>, now uses logo-icon.svg -->
+            <div class="logo-mark">
+              <img src="logo-icon.svg" alt="Jibro Technology" />
+            </div>
             <div>
               <div class="logo-text">Jibro Technology</div>
               <span class="logo-sub" style="color:rgba(255,255,255,0.35);">Pvt. Ltd.</span>
