@@ -6,8 +6,38 @@
 <title>PDF Editor</title>
 
 <!-- Libraries -->
-<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js">
+// ── Sidebar mobile toggle ────────────────────────────────
+const sidebarToggle = $('sidebar-toggle');
+const sidebarEl = $('sidebar');
+const sidebarBackdrop = $('sidebar-backdrop');
+if (sidebarToggle) {
+  sidebarToggle.addEventListener('click', () => {
+    sidebarEl.classList.toggle('open');
+    sidebarBackdrop.classList.toggle('show');
+  });
+  sidebarBackdrop.addEventListener('click', () => {
+    sidebarEl.classList.remove('open');
+    sidebarBackdrop.classList.remove('show');
+  });
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js">
+// ── Sidebar mobile toggle ────────────────────────────────
+const sidebarToggle = $('sidebar-toggle');
+const sidebarEl = $('sidebar');
+const sidebarBackdrop = $('sidebar-backdrop');
+if (sidebarToggle) {
+  sidebarToggle.addEventListener('click', () => {
+    sidebarEl.classList.toggle('open');
+    sidebarBackdrop.classList.toggle('show');
+  });
+  sidebarBackdrop.addEventListener('click', () => {
+    sidebarEl.classList.remove('open');
+    sidebarBackdrop.classList.remove('show');
+  });
+}
+</script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
 <style>
@@ -52,7 +82,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;scroll-behavior:smooth}
 body{min-height:100dvh;font-family:'Segoe UI',system-ui,sans-serif;font-size:var(--text-sm);
-     color:var(--color-text);background:var(--color-bg);overflow:hidden;display:flex;flex-direction:column}
+     color:var(--color-text);background:var(--color-bg);overflow:hidden;display:flex;flex-direction:column;height:100dvh}
 button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
 input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;border-radius:var(--radius-sm)}
@@ -104,13 +134,14 @@ a,button,[role="button"]{transition:color var(--transition),background var(--tra
 .theme-toggle{margin-left:auto;flex-shrink:0}
 
 /* ─── Layout ─────────────────────────────────────────── */
-#app{display:flex;flex:1;overflow:hidden}
+#app{display:flex;flex:1;overflow:hidden;min-height:0}
 
 /* ─── Sidebar ────────────────────────────────────────── */
 #sidebar{
   width:var(--sidebar-w);background:var(--color-surface);
   border-right:1px solid var(--color-divider);
   display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;
+  transition:width .25s ease,transform .25s ease;
 }
 #sidebar-tabs{display:flex;border-bottom:1px solid var(--color-divider);flex-shrink:0}
 .stab{
@@ -119,7 +150,7 @@ a,button,[role="button"]{transition:color var(--transition),background var(--tra
 }
 .stab:hover{color:var(--color-text);background:var(--color-surface-offset)}
 .stab.active{color:var(--color-primary);border-bottom-color:var(--color-primary)}
-#sidebar-content{flex:1;overflow-y:auto;padding:var(--space-3)}
+#sidebar-content{flex:1;overflow-y:auto;overflow-x:hidden;padding:var(--space-3);min-height:0}
 .panel{display:none}
 .panel.active{display:block}
 
@@ -166,12 +197,14 @@ input[type="color"].prop-input{padding:2px;height:28px;width:44px;cursor:pointer
 
 /* ─── Canvas Area ─────────────────────────────────────── */
 #canvas-area{
-  flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;
+  flex:1;overflow-x:auto;overflow-y:auto;display:flex;flex-direction:column;align-items:center;
   background:var(--color-bg);padding:var(--space-6) var(--space-4);gap:var(--space-6);
+  min-height:0;min-width:0;
+  -webkit-overflow-scrolling:touch;
 }
 .page-wrapper{
   position:relative;box-shadow:var(--shadow-lg);border-radius:var(--radius-sm);
-  background:white;display:inline-block;
+  background:white;display:inline-block;flex-shrink:0;
 }
 .page-wrapper canvas{display:block}
 /* annotation overlay sits on top of the PDF canvas */
@@ -281,9 +314,38 @@ input[type="color"].prop-input{padding:2px;height:28px;width:44px;cursor:pointer
 ::-webkit-scrollbar-thumb:hover{background:var(--color-text-faint)}
 
 /* ─── Responsive ──────────────────────────────────────── */
-@media(max-width:640px){
-  #sidebar{display:none}
-  #toolbar .logo span{display:none}
+/* Mobile sidebar toggle */
+#sidebar-toggle{
+  display:none;align-items:center;justify-content:center;
+  width:34px;height:34px;border-radius:var(--radius-md);
+  color:var(--color-text-muted);flex-shrink:0;
+}
+#sidebar-toggle:hover{background:var(--color-surface-offset);color:var(--color-text)}
+
+@media(max-width:768px){
+  :root{--sidebar-w:220px}
+  #sidebar-toggle{display:inline-flex}
+  #toolbar .logo span{font-size:.8rem}
+  .tb-btn span.label{display:none}
+  #sidebar{
+    position:fixed;left:0;top:var(--toolbar-h);
+    height:calc(100dvh - var(--toolbar-h));
+    z-index:200;transform:translateX(-100%);
+    box-shadow:var(--shadow-lg);
+  }
+  #sidebar.open{transform:translateX(0)}
+  #sidebar-backdrop{
+    display:none;position:fixed;inset:0;top:var(--toolbar-h);
+    background:oklch(0 0 0/.4);z-index:199;
+  }
+  #sidebar-backdrop.show{display:block}
+}
+@media(max-width:480px){
+  #toolbar{gap:var(--space-1);padding:0 var(--space-2)}
+  .tb-sep{margin:0 var(--space-1)}
+  .tb-btn{padding:var(--space-1) var(--space-2)}
+  #zoom-select{max-width:60px}
+  #canvas-area{padding:var(--space-3) var(--space-2);gap:var(--space-4)}
 }
 </style>
 </head>
@@ -333,6 +395,11 @@ input[type="color"].prop-input{padding:2px;height:28px;width:44px;cursor:pointer
     </svg>
     <span>PDF Editor</span>
   </div>
+
+  <!-- Sidebar toggle (mobile) -->
+  <button id="sidebar-toggle" aria-label="Toggle sidebar">
+    <i class="fa-solid fa-bars"></i>
+  </button>
 
   <!-- File ops -->
   <div class="tb-group">
@@ -410,6 +477,7 @@ input[type="color"].prop-input{padding:2px;height:28px;width:44px;cursor:pointer
   </button>
 </header>
 
+<div id="sidebar-backdrop"></div>
 <!-- ─── App ─────────────────────────────────────────────── -->
 <div id="app">
 
@@ -1268,6 +1336,21 @@ function base64ToBytes(b64) {
   const arr = new Uint8Array(bin.length);
   for (let i=0;i<bin.length;i++) arr[i] = bin.charCodeAt(i);
   return arr;
+}
+
+// ── Sidebar mobile toggle ────────────────────────────────
+const sidebarToggle = $('sidebar-toggle');
+const sidebarEl = $('sidebar');
+const sidebarBackdrop = $('sidebar-backdrop');
+if (sidebarToggle) {
+  sidebarToggle.addEventListener('click', () => {
+    sidebarEl.classList.toggle('open');
+    sidebarBackdrop.classList.toggle('show');
+  });
+  sidebarBackdrop.addEventListener('click', () => {
+    sidebarEl.classList.remove('open');
+    sidebarBackdrop.classList.remove('show');
+  });
 }
 </script>
 </body>
