@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PDF Editor</title>
+
+<!-- Libraries -->
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+/* ─── Design Tokens ─────────────────────────────────── */
+:root,[data-theme="light"]{
+  --color-bg:#f7f6f2;--color-surface:#f9f8f5;--color-surface-2:#fbfbf9;
+  --color-surface-offset:#f3f0ec;--color-surface-dynamic:#e6e4df;
+  --color-divider:#dcd9d5;--color-border:#d4d1ca;
+  --color-text:#28251d;--color-text-muted:#7a7974;--color-text-faint:#bab9b4;
+  --color-primary:#01696f;--color-primary-hover:#0c4e54;--color-primary-active:#0f3638;
+  --color-primary-highlight:#cedcd8;
+  --color-error:#a12c7b;--color-success:#437a22;--color-warning:#964219;
+  --color-orange:#da7101;
+  --shadow-sm:0 1px 2px oklch(0.2 0.01 80/0.06);
+  --shadow-md:0 4px 12px oklch(0.2 0.01 80/0.08);
+  --shadow-lg:0 12px 32px oklch(0.2 0.01 80/0.12);
+  --radius-sm:.375rem;--radius-md:.5rem;--radius-lg:.75rem;--radius-xl:1rem;--radius-full:9999px;
+  --space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;--space-5:1.25rem;
+  --space-6:1.5rem;--space-8:2rem;--space-10:2.5rem;--space-12:3rem;
+  --text-xs:clamp(.75rem,.7rem + .25vw,.875rem);
+  --text-sm:clamp(.875rem,.8rem + .35vw,1rem);
+  --text-base:clamp(1rem,.95rem + .25vw,1.125rem);
+  --text-lg:clamp(1.125rem,1rem + .75vw,1.5rem);
+  --transition:180ms cubic-bezier(.16,1,.3,1);
+  --sidebar-w:260px;--toolbar-h:56px;
+}
+[data-theme="dark"]{
+  --color-bg:#171614;--color-surface:#1c1b19;--color-surface-2:#201f1d;
+  --color-surface-offset:#1d1c1a;--color-surface-dynamic:#2d2c2a;
+  --color-divider:#262523;--color-border:#393836;
+  --color-text:#cdccca;--color-text-muted:#797876;--color-text-faint:#5a5957;
+  --color-primary:#4f98a3;--color-primary-hover:#227f8b;--color-primary-active:#1a626b;
+  --color-primary-highlight:#313b3b;
+  --color-error:#d163a7;--color-success:#6daa45;--color-warning:#bb653b;
+  --color-orange:#fdab43;
+  --shadow-sm:0 1px 2px oklch(0 0 0/.2);
+  --shadow-md:0 4px 12px oklch(0 0 0/.3);
+  --shadow-lg:0 12px 32px oklch(0 0 0/.4);
+}
+
+/* ─── Reset & Base ───────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;scroll-behavior:smooth}
+body{min-height:100dvh;font-family:'Segoe UI',system-ui,sans-serif;font-size:var(--text-sm);
+     color:var(--color-text);background:var(--color-bg);overflow:hidden;display:flex;flex-direction:column}
+button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;border-radius:var(--radius-sm)}
+a,button,[role="button"]{transition:color var(--transition),background var(--transition),
+  border-color var(--transition),box-shadow var(--transition),opacity var(--transition)}
+
+/* ─── Toolbar ────────────────────────────────────────── */
+#toolbar{
+  height:var(--toolbar-h);display:flex;align-items:center;gap:var(--space-2);
+  padding:0 var(--space-4);background:var(--color-surface);
+  border-bottom:1px solid var(--color-divider);box-shadow:var(--shadow-sm);
+  flex-shrink:0;z-index:100;flex-wrap:nowrap;overflow-x:auto;
+}
+#toolbar .logo{
+  display:flex;align-items:center;gap:var(--space-2);margin-right:var(--space-4);
+  flex-shrink:0;
+}
+#toolbar .logo svg{width:28px;height:28px;color:var(--color-primary)}
+#toolbar .logo span{font-size:var(--text-base);font-weight:700;white-space:nowrap;
+  color:var(--color-text);letter-spacing:-.02em}
+.tb-group{display:flex;align-items:center;gap:var(--space-1);flex-shrink:0}
+.tb-sep{width:1px;height:28px;background:var(--color-divider);margin:0 var(--space-2);flex-shrink:0}
+.tb-btn{
+  display:inline-flex;align-items:center;gap:var(--space-1);
+  padding:var(--space-1) var(--space-3);border-radius:var(--radius-md);
+  font-size:var(--text-xs);font-weight:500;white-space:nowrap;
+  color:var(--color-text-muted);border:1px solid transparent;height:34px;
+}
+.tb-btn:hover{background:var(--color-surface-offset);color:var(--color-text)}
+.tb-btn.active{background:var(--color-primary-highlight);color:var(--color-primary);
+  border-color:oklch(from var(--color-primary) l c h/.3)}
+.tb-btn.primary{background:var(--color-primary);color:#fff;border-color:transparent}
+.tb-btn.primary:hover{background:var(--color-primary-hover)}
+.tb-btn.danger{color:var(--color-error)}
+.tb-btn.danger:hover{background:oklch(from var(--color-error) l c h/.1)}
+.tb-btn i{font-size:.8rem}
+#page-info{font-size:var(--text-xs);color:var(--color-text-muted);white-space:nowrap;
+  display:flex;align-items:center;gap:var(--space-1)}
+#page-info input[type=number]{
+  width:40px;text-align:center;background:var(--color-surface-offset);
+  border:1px solid var(--color-border);border-radius:var(--radius-sm);
+  padding:2px 4px;font-size:var(--text-xs);color:var(--color-text);
+}
+#zoom-select{
+  background:var(--color-surface-offset);border:1px solid var(--color-border);
+  border-radius:var(--radius-sm);padding:2px var(--space-2);font-size:var(--text-xs);
+  color:var(--color-text);height:30px;
+}
+.theme-toggle{margin-left:auto;flex-shrink:0}
+
+/* ─── Layout ─────────────────────────────────────────── */
+#app{display:flex;flex:1;overflow:hidden}
+
+/* ─── Sidebar ────────────────────────────────────────── */
+#sidebar{
+  width:var(--sidebar-w);background:var(--color-surface);
+  border-right:1px solid var(--color-divider);
+  display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;
+}
+#sidebar-tabs{display:flex;border-bottom:1px solid var(--color-divider);flex-shrink:0}
+.stab{
+  flex:1;padding:var(--space-3) var(--space-2);font-size:var(--text-xs);font-weight:500;
+  color:var(--color-text-muted);text-align:center;border-bottom:2px solid transparent;
+}
+.stab:hover{color:var(--color-text);background:var(--color-surface-offset)}
+.stab.active{color:var(--color-primary);border-bottom-color:var(--color-primary)}
+#sidebar-content{flex:1;overflow-y:auto;padding:var(--space-3)}
+.panel{display:none}
+.panel.active{display:block}
+
+/* Thumbnails */
+#thumb-list{display:flex;flex-direction:column;gap:var(--space-2)}
+.thumb-item{
+  cursor:pointer;border-radius:var(--radius-md);overflow:hidden;
+  border:2px solid transparent;transition:border-color var(--transition),box-shadow var(--transition);
+  position:relative;
+}
+.thumb-item:hover{border-color:var(--color-primary-highlight)}
+.thumb-item.active{border-color:var(--color-primary);box-shadow:var(--shadow-md)}
+.thumb-item canvas{width:100%;display:block;background:white}
+.thumb-num{
+  position:absolute;bottom:4px;right:6px;font-size:10px;
+  background:oklch(0 0 0/.55);color:#fff;padding:1px 5px;border-radius:var(--radius-full);
+}
+
+/* Annotations panel */
+.panel-section{margin-bottom:var(--space-4)}
+.panel-label{font-size:var(--text-xs);font-weight:600;color:var(--color-text-muted);
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:var(--space-2)}
+.prop-row{display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-2)}
+.prop-row label{font-size:var(--text-xs);color:var(--color-text-muted);flex:1;min-width:0}
+.prop-input{
+  background:var(--color-surface-offset);border:1px solid var(--color-border);
+  border-radius:var(--radius-sm);padding:var(--space-1) var(--space-2);
+  font-size:var(--text-xs);color:var(--color-text);width:100%;
+}
+.prop-input:focus{border-color:var(--color-primary)}
+input[type="color"].prop-input{padding:2px;height:28px;width:44px;cursor:pointer}
+.btn-small{
+  display:inline-flex;align-items:center;gap:var(--space-1);
+  padding:var(--space-1) var(--space-3);border-radius:var(--radius-md);
+  font-size:var(--text-xs);font-weight:500;border:1px solid var(--color-border);
+  background:var(--color-surface-offset);color:var(--color-text);width:100%;
+  justify-content:center;height:30px;
+}
+.btn-small:hover{background:var(--color-surface-dynamic);border-color:var(--color-primary)}
+.btn-small.btn-primary{background:var(--color-primary);color:#fff;border-color:transparent}
+.btn-small.btn-primary:hover{background:var(--color-primary-hover)}
+.btn-small.btn-danger{border-color:var(--color-error);color:var(--color-error)}
+.btn-small.btn-danger:hover{background:oklch(from var(--color-error) l c h/.1)}
+
+/* ─── Canvas Area ─────────────────────────────────────── */
+#canvas-area{
+  flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;
+  background:var(--color-bg);padding:var(--space-6) var(--space-4);gap:var(--space-6);
+}
+.page-wrapper{
+  position:relative;box-shadow:var(--shadow-lg);border-radius:var(--radius-sm);
+  background:white;display:inline-block;
+}
+.page-wrapper canvas{display:block}
+/* annotation overlay sits on top of the PDF canvas */
+.anno-layer{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;overflow:hidden;
+}
+.anno-layer.active-tool{pointer-events:auto;cursor:crosshair}
+.anno-layer.tool-text{cursor:text}
+.anno-layer.tool-select{cursor:default}
+
+/* annotation elements */
+.anno-obj{
+  position:absolute;pointer-events:auto;box-sizing:border-box;
+  cursor:move;user-select:none;
+}
+.anno-obj.selected{outline:2px solid var(--color-primary);outline-offset:1px}
+.anno-text{
+  background:transparent;border:none;resize:none;overflow:hidden;
+  font-family:Arial,sans-serif;line-height:1.3;padding:2px 4px;
+  min-width:60px;min-height:24px;cursor:move;
+}
+.anno-text:focus{outline:2px solid var(--color-primary);cursor:text}
+.anno-rect,.anno-circle{
+  border:3px solid var(--color-primary);background:transparent;
+  border-radius:0;
+}
+.anno-circle{border-radius:50%}
+.anno-highlight{background:rgba(255,230,0,.4);border:none}
+.anno-strikethrough::after{
+  content:'';position:absolute;top:50%;left:0;right:0;height:2px;
+  background:var(--color-error);transform:translateY(-50%);
+}
+.anno-image{overflow:hidden}
+.anno-image img{width:100%;height:100%;object-fit:contain;display:block}
+.anno-resize-handle{
+  position:absolute;bottom:-5px;right:-5px;width:12px;height:12px;
+  background:var(--color-primary);border-radius:var(--radius-full);cursor:se-resize;
+  border:2px solid white;z-index:10;
+}
+
+/* drag-draw ghost */
+.draw-ghost{
+  position:absolute;border:2px dashed var(--color-primary);
+  background:var(--color-primary-highlight);opacity:.5;pointer-events:none;
+}
+
+/* ─── Drop overlay ────────────────────────────────────── */
+#drop-overlay{
+  position:fixed;inset:0;background:oklch(from var(--color-primary) l c h/.15);
+  backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;
+  z-index:9999;display:none;
+}
+#drop-overlay.show{display:flex}
+#drop-inner{
+  background:var(--color-surface-2);border:2px dashed var(--color-primary);
+  border-radius:var(--radius-xl);padding:var(--space-12) var(--space-16);
+  text-align:center;
+}
+#drop-inner i{font-size:3rem;color:var(--color-primary);margin-bottom:var(--space-4)}
+#drop-inner p{font-size:var(--text-lg);color:var(--color-text)}
+
+/* ─── Empty / Loading States ──────────────────────────── */
+#empty-state{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:70vh;gap:var(--space-4);text-align:center;
+}
+#empty-state i{font-size:4rem;color:var(--color-text-faint)}
+#empty-state h2{font-size:var(--text-lg);color:var(--color-text);font-weight:600}
+#empty-state p{color:var(--color-text-muted);max-width:36ch}
+#loading-bar{
+  position:fixed;top:0;left:0;height:3px;background:var(--color-primary);
+  width:0;transition:width .3s ease;z-index:9999;
+}
+
+/* ─── Toast ───────────────────────────────────────────── */
+#toast{
+  position:fixed;bottom:var(--space-6);right:var(--space-6);
+  background:var(--color-surface-2);border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4);
+  font-size:var(--text-xs);color:var(--color-text);box-shadow:var(--shadow-lg);
+  z-index:9998;transform:translateY(20px);opacity:0;transition:all .25s ease;
+  max-width:280px;display:flex;align-items:center;gap:var(--space-2);
+}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.success{border-color:var(--color-success);color:var(--color-success)}
+#toast.error{border-color:var(--color-error);color:var(--color-error)}
+
+/* ─── Modal (image embed) ─────────────────────────────── */
+.modal-backdrop{
+  position:fixed;inset:0;background:oklch(0 0 0/.5);z-index:500;
+  display:flex;align-items:center;justify-content:center;display:none;
+}
+.modal-backdrop.show{display:flex}
+.modal{
+  background:var(--color-surface-2);border:1px solid var(--color-border);
+  border-radius:var(--radius-xl);padding:var(--space-6);width:min(400px,90vw);
+  box-shadow:var(--shadow-lg);
+}
+.modal h3{font-size:var(--text-base);font-weight:600;margin-bottom:var(--space-4)}
+.modal-footer{display:flex;gap:var(--space-2);justify-content:flex-end;margin-top:var(--space-4)}
+
+/* ─── Scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--color-border);border-radius:var(--radius-full)}
+::-webkit-scrollbar-thumb:hover{background:var(--color-text-faint)}
+
+/* ─── Responsive ──────────────────────────────────────── */
+@media(max-width:640px){
+  #sidebar{display:none}
+  #toolbar .logo span{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Loading Bar -->
+<div id="loading-bar"></div>
+
+<!-- Drop Overlay -->
+<div id="drop-overlay">
+  <div id="drop-inner">
+    <i class="fa-solid fa-file-arrow-up"></i>
+    <p>Drop your PDF here</p>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"><i class="fa-solid fa-circle-check"></i><span id="toast-msg">Saved!</span></div>
+
+<!-- Image embed modal -->
+<div class="modal-backdrop" id="img-modal">
+  <div class="modal">
+    <h3><i class="fa-regular fa-image"></i> Embed Image</h3>
+    <div class="prop-row">
+      <label>Choose image file</label>
+    </div>
+    <input type="file" id="img-file-input" accept="image/png,image/jpeg,image/gif,image/webp"
+      class="prop-input" style="width:100%;margin-bottom:.5rem" />
+    <div class="modal-footer">
+      <button class="btn-small" id="img-modal-cancel">Cancel</button>
+      <button class="btn-small btn-primary" id="img-modal-ok">Embed</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Toolbar ─────────────────────────────────────────── -->
+<header id="toolbar">
+  <!-- Logo -->
+  <div class="logo">
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-label="PDF Editor Logo">
+      <rect x="5" y="2" width="16" height="20" rx="2"/>
+      <path d="M16 2l6 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2"/>
+      <path d="M16 2v6h6" stroke-linejoin="round"/>
+      <path d="M9 14h10M9 18h6" stroke-linecap="round"/>
+      <circle cx="24" cy="26" r="5" fill="var(--color-primary)" stroke="none"/>
+      <path d="M22 26l1.5 1.5L26 24" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>PDF Editor</span>
+  </div>
+
+  <!-- File ops -->
+  <div class="tb-group">
+    <button class="tb-btn" id="btn-open" title="Open PDF (Ctrl+O)">
+      <i class="fa-solid fa-folder-open"></i> Open
+    </button>
+    <input type="file" id="file-input" accept=".pdf" style="display:none" />
+    <button class="tb-btn" id="btn-save" title="Save PDF (Ctrl+S)" disabled>
+      <i class="fa-solid fa-floppy-disk"></i> Save
+    </button>
+    <button class="tb-btn" id="btn-print" title="Print" disabled>
+      <i class="fa-solid fa-print"></i>
+    </button>
+  </div>
+
+  <div class="tb-sep"></div>
+
+  <!-- Tools -->
+  <div class="tb-group" id="tool-group">
+    <button class="tb-btn active" id="tool-select" data-tool="select" title="Select / Move">
+      <i class="fa-solid fa-arrow-pointer"></i>
+    </button>
+    <button class="tb-btn" id="tool-text" data-tool="text" title="Add Text">
+      <i class="fa-solid fa-font"></i> Text
+    </button>
+    <button class="tb-btn" id="tool-highlight" data-tool="highlight" title="Highlight">
+      <i class="fa-solid fa-highlighter"></i>
+    </button>
+    <button class="tb-btn" id="tool-rect" data-tool="rect" title="Rectangle">
+      <i class="fa-regular fa-square"></i>
+    </button>
+    <button class="tb-btn" id="tool-circle" data-tool="circle" title="Ellipse">
+      <i class="fa-regular fa-circle"></i>
+    </button>
+    <button class="tb-btn" id="tool-strikethrough" data-tool="strikethrough" title="Strikethrough">
+      <i class="fa-solid fa-strikethrough"></i>
+    </button>
+    <button class="tb-btn" id="tool-image" data-tool="image" title="Embed Image">
+      <i class="fa-regular fa-image"></i>
+    </button>
+    <button class="tb-btn danger" id="btn-delete-anno" title="Delete selected (Del)" disabled>
+      <i class="fa-solid fa-trash"></i>
+    </button>
+  </div>
+
+  <div class="tb-sep"></div>
+
+  <!-- Pages -->
+  <div class="tb-group" id="page-group">
+    <button class="tb-btn" id="btn-prev" title="Previous page" disabled><i class="fa-solid fa-chevron-left"></i></button>
+    <div id="page-info">
+      <input type="number" id="page-num-input" min="1" value="1" title="Go to page" disabled />
+      <span>/ <span id="page-count">–</span></span>
+    </div>
+    <button class="tb-btn" id="btn-next" title="Next page" disabled><i class="fa-solid fa-chevron-right"></i></button>
+  </div>
+
+  <!-- Zoom -->
+  <div class="tb-group">
+    <button class="tb-btn" id="btn-zoom-out" title="Zoom out" disabled><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+    <select id="zoom-select" disabled>
+      <option value=".5">50%</option>
+      <option value=".75">75%</option>
+      <option value="1" selected>100%</option>
+      <option value="1.25">125%</option>
+      <option value="1.5">150%</option>
+      <option value="2">200%</option>
+    </select>
+    <button class="tb-btn" id="btn-zoom-in" title="Zoom in" disabled><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+  </div>
+
+  <!-- Dark mode toggle -->
+  <button class="tb-btn theme-toggle" id="theme-btn" data-theme-toggle aria-label="Toggle theme">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</header>
+
+<!-- ─── App ─────────────────────────────────────────────── -->
+<div id="app">
+
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div id="sidebar-tabs">
+      <button class="stab active" data-tab="pages"><i class="fa-solid fa-layer-group"></i> Pages</button>
+      <button class="stab" data-tab="props"><i class="fa-solid fa-sliders"></i> Style</button>
+    </div>
+    <div id="sidebar-content">
+      <!-- Pages / Thumbnails -->
+      <div class="panel active" id="panel-pages">
+        <div id="thumb-list"><p style="color:var(--color-text-muted);font-size:var(--text-xs)">Open a PDF to see pages</p></div>
+      </div>
+      <!-- Properties -->
+      <div class="panel" id="panel-props">
+        <div class="panel-section">
+          <div class="panel-label">Text</div>
+          <div class="prop-row">
+            <label>Font size</label>
+            <input type="number" class="prop-input" id="prop-font-size" value="16" min="6" max="120" style="width:60px" />
+          </div>
+          <div class="prop-row">
+            <label>Color</label>
+            <input type="color" class="prop-input" id="prop-color" value="#e03030" />
+          </div>
+          <div class="prop-row">
+            <label>Bold</label>
+            <input type="checkbox" id="prop-bold" />
+          </div>
+          <div class="prop-row">
+            <label>Italic</label>
+            <input type="checkbox" id="prop-italic" />
+          </div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-label">Shape</div>
+          <div class="prop-row">
+            <label>Stroke color</label>
+            <input type="color" class="prop-input" id="prop-stroke-color" value="#e03030" />
+          </div>
+          <div class="prop-row">
+            <label>Stroke width</label>
+            <input type="number" class="prop-input" id="prop-stroke-w" value="3" min="1" max="20" style="width:60px" />
+          </div>
+          <div class="prop-row">
+            <label>Fill color</label>
+            <input type="color" class="prop-input" id="prop-fill-color" value="#ff000000" />
+          </div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-label">Highlight</div>
+          <div class="prop-row">
+            <label>Color</label>
+            <input type="color" class="prop-input" id="prop-hl-color" value="#ffee00" />
+          </div>
+          <div class="prop-row">
+            <label>Opacity</label>
+            <input type="range" id="prop-hl-opacity" min="10" max="90" value="40" style="width:100%" />
+          </div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-label">Annotation</div>
+          <button class="btn-small btn-danger" id="btn-del-sel">
+            <i class="fa-solid fa-trash"></i> Delete selected
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Canvas Area -->
+  <main id="canvas-area">
+    <!-- empty state -->
+    <div id="empty-state">
+      <i class="fa-regular fa-file-pdf"></i>
+      <h2>No PDF open</h2>
+      <p>Click <strong>Open</strong> in the toolbar or drag &amp; drop a PDF file anywhere on this page.</p>
+      <button class="btn-small btn-primary" id="btn-open-2" style="width:auto;padding:.5rem 1.5rem">
+        <i class="fa-solid fa-folder-open"></i> Open PDF
+      </button>
+    </div>
+  </main>
+
+</div>
+
+<!-- ─── Scripts ─────────────────────────────────────────── -->
+<script>
+'use strict';
+// ── PDF.js worker setup ──────────────────────────────────
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// ── State ────────────────────────────────────────────────
+const state = {
+  pdfDoc: null,       // pdf-lib document
+  pdfJsDoc: null,     // pdf.js document
+  totalPages: 0,
+  currentPage: 1,
+  zoom: 1,
+  tool: 'select',
+  annotations: {},    // pageNum -> [anno, ...]
+  selected: null,     // { pageNum, anno }
+  fileName: 'edited.pdf',
+};
+
+// anno shape: { id, type, x, y, w, h, text, color, fontSize, bold, italic,
+//               strokeColor, strokeWidth, fillColor, hlColor, hlOpacity,
+//               imgSrc (data URL) }
+
+let uidCounter = 0;
+const uid = () => 'a' + (++uidCounter);
+
+// ── DOM refs ─────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const canvasArea = $('canvas-area');
+const emptyState = $('empty-state');
+const thumbList = $('thumb-list');
+const loadingBar = $('loading-bar');
+
+// ── Toast ────────────────────────────────────────────────
+let toastTimer;
+function toast(msg, type='success') {
+  const el = $('toast');
+  const icon = el.querySelector('i');
+  $('toast-msg').textContent = msg;
+  el.className = 'show ' + type;
+  icon.className = type === 'success' ? 'fa-solid fa-circle-check' :
+                   type === 'error'   ? 'fa-solid fa-circle-xmark' :
+                                        'fa-solid fa-circle-info';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.classList.remove('show'); }, 2800);
+}
+
+// ── Loading bar ───────────────────────────────────────────
+function setProgress(p) {
+  loadingBar.style.width = p + '%';
+  if (p >= 100) setTimeout(() => { loadingBar.style.width = '0'; }, 400);
+}
+
+// ── Theme toggle ──────────────────────────────────────────
+(function(){
+  const html = document.documentElement;
+  const btn = $('theme-btn');
+  let dark = true;
+  html.setAttribute('data-theme', 'dark');
+  btn.addEventListener('click', () => {
+    dark = !dark;
+    html.setAttribute('data-theme', dark ? 'dark' : 'light');
+    btn.innerHTML = dark
+      ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+      : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+  });
+})();
+
+// ── Sidebar tabs ──────────────────────────────────────────
+document.querySelectorAll('.stab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    $('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// ── Tool selection ────────────────────────────────────────
+document.querySelectorAll('[data-tool]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.id === 'tool-image') { openImageModal(); return; }
+    selectTool(btn.dataset.tool);
+  });
+});
+function selectTool(t) {
+  state.tool = t;
+  document.querySelectorAll('[data-tool]').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector('[data-tool="' + t + '"]');
+  if (btn) btn.classList.add('active');
+  updateAnnoLayers();
+}
+
+// ── Open PDF ──────────────────────────────────────────────
+$('btn-open').addEventListener('click', () => $('file-input').click());
+$('btn-open-2').addEventListener('click', () => $('file-input').click());
+$('file-input').addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (f) loadPdf(f);
+  e.target.value = '';
+});
+
+async function loadPdf(file) {
+  state.fileName = file.name.replace(/\.pdf$/i, '') + '_edited.pdf';
+  setProgress(20);
+  try {
+    const bytes = await file.arrayBuffer();
+    setProgress(50);
+
+    // Load with pdf-lib for editing
+    state.pdfDoc = await PDFLib.PDFDocument.load(bytes, { ignoreEncryption: true });
+    setProgress(70);
+
+    // Load with pdf.js for rendering
+    const loadingTask = pdfjsLib.getDocument({ data: bytes.slice() });
+    state.pdfJsDoc = await loadingTask.promise;
+    state.totalPages = state.pdfJsDoc.numPages;
+    setProgress(90);
+
+    // Reset
+    state.annotations = {};
+    state.selected = null;
+    state.currentPage = 1;
+    emptyState.style.display = 'none';
+
+    // Enable UI
+    ['btn-save','btn-print','btn-prev','btn-next','btn-zoom-in','btn-zoom-out','zoom-select','page-num-input']
+      .forEach(id => { const el = $(id); if(el) el.removeAttribute('disabled'); });
+    $('page-count').textContent = state.totalPages;
+    $('page-num-input').max = state.totalPages;
+
+    renderAllPages();
+    buildThumbnails();
+    setProgress(100);
+    toast('PDF loaded — ' + state.totalPages + ' page' + (state.totalPages>1?'s':''), 'success');
+  } catch(err) {
+    console.error(err);
+    toast('Failed to load PDF: ' + err.message, 'error');
+    setProgress(100);
+  }
+}
+
+// ── Render pages ──────────────────────────────────────────
+async function renderAllPages() {
+  // Remove old page wrappers
+  Array.from(canvasArea.querySelectorAll('.page-wrapper')).forEach(el => el.remove());
+
+  for (let p = 1; p <= state.totalPages; p++) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'page-wrapper';
+    wrapper.dataset.page = p;
+
+    const canvas = document.createElement('canvas');
+    canvas.className = 'pdf-canvas';
+    wrapper.appendChild(canvas);
+
+    const annoLayer = document.createElement('div');
+    annoLayer.className = 'anno-layer';
+    annoLayer.dataset.page = p;
+    wrapper.appendChild(annoLayer);
+
+    canvasArea.appendChild(wrapper);
+
+    await renderPage(p, canvas);
+    setupAnnoLayer(annoLayer, p);
+    restoreAnnotations(p);
+  }
+  highlightCurrentPage();
+}
+
+async function renderPage(pageNum, canvas) {
+  const page = await state.pdfJsDoc.getPage(pageNum);
+  const viewport = page.getViewport({ scale: state.zoom });
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+  await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+}
+
+// ── Thumbnails ────────────────────────────────────────────
+async function buildThumbnails() {
+  thumbList.innerHTML = '';
+  for (let p = 1; p <= state.totalPages; p++) {
+    const item = document.createElement('div');
+    item.className = 'thumb-item' + (p===state.currentPage ? ' active' : '');
+    item.dataset.page = p;
+
+    const tc = document.createElement('canvas');
+    item.appendChild(tc);
+
+    const num = document.createElement('div');
+    num.className = 'thumb-num';
+    num.textContent = p;
+    item.appendChild(num);
+
+    thumbList.appendChild(item);
+
+    // render small
+    const page = await state.pdfJsDoc.getPage(p);
+    const vp = page.getViewport({ scale: 0.25 });
+    tc.width = vp.width; tc.height = vp.height;
+    await page.render({ canvasContext: tc.getContext('2d'), viewport: vp }).promise;
+
+    item.addEventListener('click', () => goToPage(p));
+  }
+}
+
+function highlightCurrentPage() {
+  document.querySelectorAll('.thumb-item').forEach(t => {
+    t.classList.toggle('active', parseInt(t.dataset.page) === state.currentPage);
+  });
+  $('page-num-input').value = state.currentPage;
+  const pw = canvasArea.querySelector(`.page-wrapper[data-page="${state.currentPage}"]`);
+  if (pw) pw.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function goToPage(p) {
+  if (!state.pdfJsDoc) return;
+  state.currentPage = Math.max(1, Math.min(p, state.totalPages));
+  highlightCurrentPage();
+}
+
+// ── Page / Zoom controls ──────────────────────────────────
+$('btn-prev').addEventListener('click', () => goToPage(state.currentPage - 1));
+$('btn-next').addEventListener('click', () => goToPage(state.currentPage + 1));
+$('page-num-input').addEventListener('change', e => goToPage(parseInt(e.target.value) || 1));
+$('btn-zoom-in').addEventListener('click', () => setZoom(Math.min(state.zoom + 0.25, 3)));
+$('btn-zoom-out').addEventListener('click', () => setZoom(Math.max(state.zoom - 0.25, 0.25)));
+$('zoom-select').addEventListener('change', e => setZoom(parseFloat(e.target.value)));
+
+function setZoom(z) {
+  state.zoom = z;
+  $('zoom-select').value = z;
+  if (state.pdfJsDoc) renderAllPages();
+}
+
+// ── Annotation Layer setup ────────────────────────────────
+function setupAnnoLayer(layer, pageNum) {
+  let dragState = null;
+  let drawGhost = null;
+
+  layer.addEventListener('mousedown', e => {
+    if (state.tool === 'select') return;
+    if (e.button !== 0) return;
+    e.preventDefault();
+
+    const rect = layer.getBoundingClientRect();
+    const x0 = e.clientX - rect.left;
+    const y0 = e.clientY - rect.top;
+
+    if (state.tool === 'text') {
+      // place text immediately
+      addAnnotation(pageNum, {
+        type: 'text',
+        x: x0, y: y0, w: 180, h: 36,
+        text: 'Text',
+        color: getProps().color,
+        fontSize: getProps().fontSize,
+        bold: getProps().bold,
+        italic: getProps().italic,
+      });
+      selectTool('select');
+      return;
+    }
+
+    if (state.tool === 'image') return;
+
+    // draw-to-create for shapes/highlight/strikethrough
+    dragState = { x0, y0 };
+    drawGhost = document.createElement('div');
+    drawGhost.className = 'draw-ghost';
+    drawGhost.style.left = x0 + 'px';
+    drawGhost.style.top = y0 + 'px';
+    drawGhost.style.width = '0';
+    drawGhost.style.height = '0';
+    layer.appendChild(drawGhost);
+
+    const onMove = ev => {
+      if (!drawGhost) return;
+      const cx = ev.clientX - rect.left;
+      const cy = ev.clientY - rect.top;
+      const dx = cx - x0, dy = cy - y0;
+      drawGhost.style.left = Math.min(cx, x0) + 'px';
+      drawGhost.style.top  = Math.min(cy, y0) + 'px';
+      drawGhost.style.width  = Math.abs(dx) + 'px';
+      drawGhost.style.height = Math.abs(dy) + 'px';
+    };
+    const onUp = ev => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      if (!drawGhost) return;
+      const cx = ev.clientX - rect.left;
+      const cy = ev.clientY - rect.top;
+      const x = Math.min(cx, x0), y = Math.min(cy, y0);
+      const w = Math.abs(cx - x0), h = Math.abs(cy - y0);
+      drawGhost.remove(); drawGhost = null;
+      if (w < 4 || h < 4) return;
+
+      const p = getProps();
+      const anno = { x, y, w, h };
+      if (state.tool === 'rect') {
+        Object.assign(anno, { type:'rect', strokeColor: p.strokeColor, strokeWidth: p.strokeWidth, fillColor: p.fillColor });
+      } else if (state.tool === 'circle') {
+        Object.assign(anno, { type:'circle', strokeColor: p.strokeColor, strokeWidth: p.strokeWidth, fillColor: p.fillColor });
+      } else if (state.tool === 'highlight') {
+        Object.assign(anno, { type:'highlight', hlColor: p.hlColor, hlOpacity: p.hlOpacity });
+      } else if (state.tool === 'strikethrough') {
+        Object.assign(anno, { type:'strikethrough', color: p.color });
+      }
+      addAnnotation(pageNum, anno);
+      selectTool('select');
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+
+  layer.addEventListener('click', e => {
+    if (state.tool !== 'select') return;
+    if (e.target === layer) deselectAll();
+  });
+}
+
+function updateAnnoLayers() {
+  document.querySelectorAll('.anno-layer').forEach(l => {
+    l.className = 'anno-layer';
+    if (state.tool !== 'select') {
+      l.classList.add('active-tool');
+      if (state.tool === 'text') l.classList.add('tool-text');
+    }
+  });
+}
+
+// ── Annotation CRUD ───────────────────────────────────────
+function addAnnotation(pageNum, data) {
+  if (!state.annotations[pageNum]) state.annotations[pageNum] = [];
+  const anno = { id: uid(), ...data };
+  state.annotations[pageNum].push(anno);
+  renderAnnotation(pageNum, anno);
+  selectAnnotation(pageNum, anno);
+  return anno;
+}
+
+function restoreAnnotations(pageNum) {
+  if (!state.annotations[pageNum]) return;
+  state.annotations[pageNum].forEach(a => renderAnnotation(pageNum, a));
+}
+
+function renderAnnotation(pageNum, anno) {
+  const layer = canvasArea.querySelector(`.anno-layer[data-page="${pageNum}"]`);
+  if (!layer) return;
+  // Remove existing DOM element for this anno if re-rendering
+  const existing = layer.querySelector(`[data-id="${anno.id}"]`);
+  if (existing) existing.remove();
+
+  const el = document.createElement('div');
+  el.className = 'anno-obj';
+  el.dataset.id = anno.id;
+  el.style.left = anno.x + 'px';
+  el.style.top = anno.y + 'px';
+  el.style.width = anno.w + 'px';
+  el.style.height = anno.h + 'px';
+
+  if (anno.type === 'text') {
+    el.classList.add('anno-text');
+    const ta = document.createElement('textarea');
+    ta.className = 'anno-text';
+    ta.value = anno.text || '';
+    ta.style.width = '100%';
+    ta.style.height = '100%';
+    ta.style.fontSize = (anno.fontSize || 16) + 'px';
+    ta.style.color = anno.color || '#000';
+    ta.style.fontWeight = anno.bold ? 'bold' : 'normal';
+    ta.style.fontStyle = anno.italic ? 'italic' : 'normal';
+    ta.style.background = 'transparent';
+    ta.style.border = 'none';
+    ta.style.resize = 'none';
+    ta.style.overflow = 'hidden';
+    ta.style.padding = '2px 4px';
+    ta.style.cursor = 'move';
+    ta.style.fontFamily = 'Arial, sans-serif';
+    ta.style.lineHeight = '1.3';
+    ta.addEventListener('focus', e => { ta.style.cursor='text'; e.stopPropagation(); });
+    ta.addEventListener('blur', () => { ta.style.cursor='move'; anno.text = ta.value; });
+    ta.addEventListener('input', () => { anno.text = ta.value; });
+    ta.addEventListener('mousedown', e => { if (document.activeElement === ta) e.stopPropagation(); });
+    el.appendChild(ta);
+  } else if (anno.type === 'rect') {
+    el.classList.add('anno-rect');
+    el.style.border = `${anno.strokeWidth||3}px solid ${anno.strokeColor||'#e03030'}`;
+    el.style.background = anno.fillColor && anno.fillColor !== '#ff000000' ? anno.fillColor : 'transparent';
+  } else if (anno.type === 'circle') {
+    el.classList.add('anno-circle');
+    el.style.border = `${anno.strokeWidth||3}px solid ${anno.strokeColor||'#e03030'}`;
+    el.style.background = anno.fillColor && anno.fillColor !== '#ff000000' ? anno.fillColor : 'transparent';
+  } else if (anno.type === 'highlight') {
+    el.classList.add('anno-highlight');
+    const c = hexToRgb(anno.hlColor || '#ffee00');
+    el.style.background = `rgba(${c.r},${c.g},${c.b},${(anno.hlOpacity||40)/100})`;
+  } else if (anno.type === 'strikethrough') {
+    el.classList.add('anno-strikethrough');
+    el.style.color = anno.color || '#e03030';
+  } else if (anno.type === 'image') {
+    el.classList.add('anno-image');
+    const img = document.createElement('img');
+    img.src = anno.imgSrc;
+    img.alt = 'embedded image';
+    el.appendChild(img);
+  }
+
+  // Resize handle
+  if (anno.type !== 'text') {
+    const handle = document.createElement('div');
+    handle.className = 'anno-resize-handle';
+    el.appendChild(handle);
+    makeResizable(el, handle, anno, pageNum);
+  }
+
+  makeDraggable(el, anno, pageNum);
+
+  el.addEventListener('mousedown', e => {
+    if (state.tool !== 'select') return;
+    e.stopPropagation();
+    selectAnnotation(pageNum, anno);
+  });
+
+  layer.appendChild(el);
+}
+
+// ── Drag ─────────────────────────────────────────────────
+function makeDraggable(el, anno, pageNum) {
+  el.addEventListener('mousedown', e => {
+    if (state.tool !== 'select') return;
+    if (e.target.classList.contains('anno-resize-handle')) return;
+    if (e.target.tagName === 'TEXTAREA' && document.activeElement === e.target) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const startX = e.clientX - anno.x;
+    const startY = e.clientY - anno.y;
+    const layer = canvasArea.querySelector(`.anno-layer[data-page="${pageNum}"]`);
+    const bound = layer.getBoundingClientRect();
+
+    const onMove = ev => {
+      anno.x = ev.clientX - startX;
+      anno.y = ev.clientY - startY;
+      el.style.left = anno.x + 'px';
+      el.style.top = anno.y + 'px';
+    };
+    const onUp = () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+}
+
+// ── Resize ────────────────────────────────────────────────
+function makeResizable(el, handle, anno, pageNum) {
+  handle.addEventListener('mousedown', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    const startX = e.clientX, startY = e.clientY;
+    const sw = anno.w, sh = anno.h;
+    const onMove = ev => {
+      anno.w = Math.max(20, sw + ev.clientX - startX);
+      anno.h = Math.max(20, sh + ev.clientY - startY);
+      el.style.width = anno.w + 'px';
+      el.style.height = anno.h + 'px';
+    };
+    const onUp = () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+}
+
+// ── Select ────────────────────────────────────────────────
+function selectAnnotation(pageNum, anno) {
+  deselectAll();
+  state.selected = { pageNum, anno };
+  const el = canvasArea.querySelector(`[data-id="${anno.id}"]`);
+  if (el) el.classList.add('selected');
+  $('btn-delete-anno').removeAttribute('disabled');
+  // Switch to props tab
+  document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('.stab[data-tab="props"]').classList.add('active');
+  $('panel-props').classList.add('active');
+  loadPropsFromAnno(anno);
+}
+
+function deselectAll() {
+  document.querySelectorAll('.anno-obj.selected').forEach(el => el.classList.remove('selected'));
+  state.selected = null;
+  $('btn-delete-anno').setAttribute('disabled', '');
+}
+
+function deleteSelected() {
+  if (!state.selected) return;
+  const { pageNum, anno } = state.selected;
+  state.annotations[pageNum] = (state.annotations[pageNum] || []).filter(a => a.id !== anno.id);
+  const el = canvasArea.querySelector(`[data-id="${anno.id}"]`);
+  if (el) el.remove();
+  state.selected = null;
+  $('btn-delete-anno').setAttribute('disabled', '');
+  toast('Annotation deleted', 'info');
+}
+$('btn-delete-anno').addEventListener('click', deleteSelected);
+$('btn-del-sel').addEventListener('click', deleteSelected);
+
+document.addEventListener('keydown', e => {
+  if ((e.key === 'Delete' || e.key === 'Backspace') && state.selected &&
+      document.activeElement.tagName !== 'TEXTAREA' && document.activeElement.tagName !== 'INPUT') {
+    deleteSelected();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); savePdf(); }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'o') { e.preventDefault(); $('file-input').click(); }
+  if (e.key === 'Escape') deselectAll();
+});
+
+// ── Property panel <-> annotation sync ───────────────────
+function getProps() {
+  return {
+    color: $('prop-color').value,
+    fontSize: parseInt($('prop-font-size').value) || 16,
+    bold: $('prop-bold').checked,
+    italic: $('prop-italic').checked,
+    strokeColor: $('prop-stroke-color').value,
+    strokeWidth: parseInt($('prop-stroke-w').value) || 3,
+    fillColor: $('prop-fill-color').value,
+    hlColor: $('prop-hl-color').value,
+    hlOpacity: parseInt($('prop-hl-opacity').value) || 40,
+  };
+}
+
+function loadPropsFromAnno(anno) {
+  if (anno.color) $('prop-color').value = anno.color;
+  if (anno.fontSize) $('prop-font-size').value = anno.fontSize;
+  $('prop-bold').checked = !!anno.bold;
+  $('prop-italic').checked = !!anno.italic;
+  if (anno.strokeColor) $('prop-stroke-color').value = anno.strokeColor;
+  if (anno.strokeWidth) $('prop-stroke-w').value = anno.strokeWidth;
+  if (anno.fillColor) $('prop-fill-color').value = anno.fillColor;
+  if (anno.hlColor) $('prop-hl-color').value = anno.hlColor;
+  if (anno.hlOpacity) $('prop-hl-opacity').value = anno.hlOpacity;
+}
+
+// Live update selected annotation from props
+['prop-color','prop-font-size','prop-bold','prop-italic',
+ 'prop-stroke-color','prop-stroke-w','prop-fill-color','prop-hl-color','prop-hl-opacity']
+.forEach(id => {
+  $(id).addEventListener('input', () => {
+    if (!state.selected) return;
+    const { pageNum, anno } = state.selected;
+    const p = getProps();
+    Object.assign(anno, p);
+    renderAnnotation(pageNum, anno); // re-render that element
+    selectAnnotation(pageNum, anno);
+  });
+});
+
+// ── Image embedding ───────────────────────────────────────
+function openImageModal() {
+  if (!state.pdfDoc) { toast('Open a PDF first', 'error'); selectTool('select'); return; }
+  $('img-modal').classList.add('show');
+}
+$('img-modal-cancel').addEventListener('click', () => {
+  $('img-modal').classList.remove('show');
+  selectTool('select');
+});
+$('img-modal-ok').addEventListener('click', () => {
+  const file = $('img-file-input').files[0];
+  if (!file) { toast('Select an image first', 'error'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    $('img-modal').classList.remove('show');
+    $('img-file-input').value = '';
+    const p = getProps();
+    addAnnotation(state.currentPage, {
+      type: 'image',
+      x: 40, y: 40, w: 200, h: 150,
+      imgSrc: e.target.result,
+    });
+    selectTool('select');
+    toast('Image placed on page ' + state.currentPage);
+  };
+  reader.readAsDataURL(file);
+});
+
+// ── Save / Export ─────────────────────────────────────────
+$('btn-save').addEventListener('click', savePdf);
+
+async function savePdf() {
+  if (!state.pdfDoc) return;
+  toast('Saving…', 'info');
+  setProgress(10);
+  try {
+    const pages = state.pdfDoc.getPages();
+
+    for (let p = 1; p <= state.totalPages; p++) {
+      const annos = state.annotations[p] || [];
+      if (annos.length === 0) continue;
+      const pdfPage = pages[p - 1];
+      const { width: pw, height: ph } = pdfPage.getSize();
+
+      // get rendered canvas size for scaling
+      const canvas = canvasArea.querySelector(`.page-wrapper[data-page="${p}"] .pdf-canvas`);
+      const cw = canvas ? canvas.width : pw;
+      const ch = canvas ? canvas.height : ph;
+      const sx = pw / cw;
+      const sy = ph / ch;
+
+      const helvetica = await state.pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+      const helveticaBoldOblique = await state.pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBoldOblique);
+      const helveticaBold = await state.pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+      const helveticaOblique = await state.pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaOblique);
+
+      for (const anno of annos) {
+        const ax = anno.x * sx;
+        // pdf-lib Y is from bottom
+        const ay = ph - (anno.y + anno.h) * sy;
+        const aw = anno.w * sx;
+        const ah = anno.h * sy;
+
+        if (anno.type === 'text') {
+          const font = anno.bold && anno.italic ? helveticaBoldOblique :
+                       anno.bold ? helveticaBold :
+                       anno.italic ? helveticaOblique : helvetica;
+          const c = hexToPdfRgb(anno.color || '#000000');
+          const fs = Math.max(6, (anno.fontSize || 16) * sx);
+          const lines = (anno.text || '').split('\n');
+          let lineY = ph - anno.y * sy - fs;
+          for (const line of lines) {
+            if (!line) { lineY -= fs * 1.3; continue; }
+            pdfPage.drawText(line, { x: ax, y: lineY, size: fs, font, color: PDFLib.rgb(c.r, c.g, c.b) });
+            lineY -= fs * 1.3;
+          }
+        } else if (anno.type === 'rect') {
+          const sc = hexToPdfRgb(anno.strokeColor || '#e03030');
+          const fc = anno.fillColor && anno.fillColor !== '#ff000000'
+            ? hexToPdfRgb(anno.fillColor) : null;
+          pdfPage.drawRectangle({
+            x: ax, y: ay, width: aw, height: ah,
+            borderColor: PDFLib.rgb(sc.r, sc.g, sc.b),
+            borderWidth: (anno.strokeWidth || 3) * sx,
+            color: fc ? PDFLib.rgb(fc.r, fc.g, fc.b) : undefined,
+            opacity: fc ? 1 : 0,
+          });
+        } else if (anno.type === 'circle') {
+          const sc = hexToPdfRgb(anno.strokeColor || '#e03030');
+          const fc = anno.fillColor && anno.fillColor !== '#ff000000'
+            ? hexToPdfRgb(anno.fillColor) : null;
+          pdfPage.drawEllipse({
+            x: ax + aw/2, y: ay + ah/2,
+            xScale: aw/2, yScale: ah/2,
+            borderColor: PDFLib.rgb(sc.r, sc.g, sc.b),
+            borderWidth: (anno.strokeWidth || 3) * sx,
+            color: fc ? PDFLib.rgb(fc.r, fc.g, fc.b) : undefined,
+            opacity: fc ? 1 : 0,
+          });
+        } else if (anno.type === 'highlight') {
+          const c = hexToRgb(anno.hlColor || '#ffee00');
+          pdfPage.drawRectangle({
+            x: ax, y: ay, width: aw, height: ah,
+            color: PDFLib.rgb(c.r/255, c.g/255, c.b/255),
+            opacity: (anno.hlOpacity || 40) / 100,
+          });
+        } else if (anno.type === 'strikethrough') {
+          const c = hexToPdfRgb(anno.color || '#e03030');
+          const midY = ay + ah / 2;
+          pdfPage.drawLine({
+            start: { x: ax, y: midY }, end: { x: ax + aw, y: midY },
+            thickness: 2 * sx, color: PDFLib.rgb(c.r, c.g, c.b),
+          });
+        } else if (anno.type === 'image') {
+          try {
+            let imgBytes;
+            const src = anno.imgSrc;
+            if (src.startsWith('data:image/png')) {
+              imgBytes = base64ToBytes(src.split(',')[1]);
+              const img = await state.pdfDoc.embedPng(imgBytes);
+              pdfPage.drawImage(img, { x: ax, y: ay, width: aw, height: ah });
+            } else {
+              imgBytes = base64ToBytes(src.split(',')[1]);
+              const img = await state.pdfDoc.embedJpg(imgBytes);
+              pdfPage.drawImage(img, { x: ax, y: ay, width: aw, height: ah });
+            }
+          } catch(imgErr) { console.warn('Image embed failed:', imgErr); }
+        }
+      }
+      setProgress(10 + Math.round((p / state.totalPages) * 80));
+    }
+
+    const pdfBytes = await state.pdfDoc.save();
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = state.fileName;
+    a.click();
+    URL.revokeObjectURL(url);
+    setProgress(100);
+    toast('PDF saved — ' + state.fileName, 'success');
+  } catch(err) {
+    console.error(err);
+    toast('Save failed: ' + err.message, 'error');
+    setProgress(100);
+  }
+}
+
+// ── Print ─────────────────────────────────────────────────
+$('btn-print').addEventListener('click', () => {
+  if (!state.pdfJsDoc) return;
+  const canvases = canvasArea.querySelectorAll('.pdf-canvas');
+  const win = window.open('', '_blank');
+  win.document.write('<html><head><title>Print PDF</title><style>body{margin:0}img{width:100%;page-break-after:always;display:block}</style></head><body>');
+  canvases.forEach(c => { win.document.write('<img src="' + c.toDataURL() + '" />'); });
+  win.document.write('</body></html>');
+  win.document.close();
+  win.onload = () => win.print();
+});
+
+// ── Drag & Drop file ──────────────────────────────────────
+const dropOverlay = $('drop-overlay');
+document.addEventListener('dragover', e => { e.preventDefault(); dropOverlay.classList.add('show'); });
+document.addEventListener('dragleave', e => { if (!e.relatedTarget) dropOverlay.classList.remove('show'); });
+document.addEventListener('drop', e => {
+  e.preventDefault();
+  dropOverlay.classList.remove('show');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type === 'application/pdf') loadPdf(f);
+  else toast('Please drop a PDF file', 'error');
+});
+
+// ── Scroll-based page tracking ────────────────────────────
+canvasArea.addEventListener('scroll', () => {
+  if (!state.pdfJsDoc) return;
+  const wrappers = canvasArea.querySelectorAll('.page-wrapper');
+  let closest = null, minDist = Infinity;
+  wrappers.forEach(w => {
+    const r = w.getBoundingClientRect();
+    const dist = Math.abs(r.top + r.height/2 - window.innerHeight/2);
+    if (dist < minDist) { minDist = dist; closest = w; }
+  });
+  if (closest) {
+    const pn = parseInt(closest.dataset.page);
+    if (pn !== state.currentPage) {
+      state.currentPage = pn;
+      $('page-num-input').value = pn;
+      document.querySelectorAll('.thumb-item').forEach(t => {
+        t.classList.toggle('active', parseInt(t.dataset.page) === pn);
+      });
+    }
+  }
+});
+
+// ── Helpers ───────────────────────────────────────────────
+function hexToRgb(hex) {
+  const h = hex.replace('#','');
+  return { r: parseInt(h.slice(0,2),16), g: parseInt(h.slice(2,4),16), b: parseInt(h.slice(4,6),16) };
+}
+function hexToPdfRgb(hex) {
+  const c = hexToRgb(hex);
+  return { r: c.r/255, g: c.g/255, b: c.b/255 };
+}
+function base64ToBytes(b64) {
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i=0;i<bin.length;i++) arr[i] = bin.charCodeAt(i);
+  return arr;
+}
+</script>
+</body>
+</html>
