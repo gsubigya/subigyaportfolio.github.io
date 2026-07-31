@@ -1,185 +1,465 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Welcome</title>
-    <style>
-      body {
-        background-color: #000;
-        color: #fff;
-        font-family: sans-serif;
-        margin: 40px;
-      }
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subigya Ghimire - Security Research &amp; Privacy</title>
+<meta name="description" content="Subigya Ghimire — security researcher">
+<meta name="robots" content="index, follow">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#FAF8F2">
+<link rel="canonical" href="https://subigya.com/">
 
-      nav {
-        display: flex;
-        gap: 20px;
-        margin-bottom: 30px;
-      }
+<!-- Open Graph / social -->
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Subigya Ghimire - Security Research & Privacy">
+<meta property="og:description" content="Security researcher focused on penetration testing, OSINT, red teaming, and digital privacy.">
+<meta property="og:url" content="https://subigya.com/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Subigya Ghimire - Security Research & Privacy">
+<meta name="twitter:description" content="Security researcher focused on penetration testing, OSINT, red teaming, and digital privacy.">
 
-      nav a {
-        color: white;
-        text-decoration: none;
-        font-weight: bold;
-      }
+<!-- Minimal, conservative CSP: same-origin by default, allow Google Fonts only -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; script-src 'self' 'sha256-gj6SxxTIndUNIVEzd2Q4mb9S0AznhGp+J7EDtcdapxA='; base-uri 'self'; form-action 'none'; frame-ancestors 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 
-      h1 {
-        font-size: 1.6em;
-        margin-bottom: 10px;
-      }
+<!-- Favicon: simple inline monogram, no external asset -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23FAF8F2'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='30' text-anchor='middle' fill='%231C1B19'%3ESG%3C/text%3E%3C/svg%3E">
 
-      .intro,
-      .featured {
-        max-width: 700px;
-        line-height: 1.6;
-      }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-      .featured {
-        margin-top: 40px;
-      }
-
-      .featured h2 {
-        font-size: 1.2em;
-        margin-bottom: 10px;
-      }
-
-      .post {
-        margin-bottom: 10px;
-      }
-
-      .post-date {
-        color: #bbb;
-        margin-right: 10px;
-        font-size: 0.95em;
-      }
-
-      .post-title {
-        color: white;
-        text-decoration: none;
-      }
-
-      .footer {
-        margin-top: 50px;
-        font-size: 0.9em;
-        color: #bbb;
-      }
-
-      .footer a {
-        color: white;
-        margin-right: 15px;
-        text-decoration: none;
-      }
-
-      .schedule-btn {
-  position: fixed;
-  bottom: 25px;
-  right: 25px;
-  background-color: #808080;
-  color: #000;
-  padding: 10px 18px;
-  font-weight: bold;
-  text-decoration: none;
-  border-radius: 4px;
-  font-size: 0.9em;
-  transition: 0.2s ease-in-out;
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Subigya Ghimire",
+  "url": "https://subigya.com",
+  "sameAs": [
+    "https://github.com/gsubigya",
+    "https://www.linkedin.com/in/subigya-ghimire/",
+    "https://medium.com/@subigya.com"
+  ],
+  "jobTitle": "Security Researcher",
+  "description": "Security researcher focused on penetration testing, OSINT, red teaming, and threat detection.",
+  "knowsAbout": ["Penetration Testing", "OSINT", "Red Teaming", "Threat Detection", "Digital Privacy", "Ethical Hacking"]
 }
+</script>
 
-.schedule-btn:hover {
-  background-color: #bbb;
-  color: #000;
-}
+<style>
+  :root{
+    --paper: #FAF8F2;
+    --paper-deep: #F1EDE1;
+    --ink: #1C1B19;
+    --ink-muted: #55503F;
+    --ink-faint: #8A8371;
+    --rule: #DAD4C2;
+    --accent: #223A5E;      /* steady ink-blue */
+    --accent-2: #7A2E2E;    /* muted seal red */
+    --max: 760px;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+    --radius: 2px;
+  }
 
-    </style>
-  </head>
-  <body>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="blogg.html">Blog</a>
-    </nav>
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
 
-    <h2>About Me.</h2>
-    <div class="intro">
-      <p>
-        I'm a cybersecurity learner with a growing passion for ethical hacking,
-        digital privacy, and uncovering how systems can break and how to defend
-        them better. <br />
-        Whether it’s dissecting vulnerabilities, exploring real-world attack
-        vectors, or simulating threats in controlled environments, I thrive in
-        spaces where curiosity meets discipline. I’m currently diving into
-        penetration testing, red teaming, OSINT, and threat detection with a
-        strong focus on practical, hands-on learning. <br />
-        My goal isn’t just to break things it’s to understand them deeply,
-        communicate findings clearly, and contribute to a more secure digital
-        world. This portfolio showcases my journey, my projects, and my evolving
-        perspective on cybersecurity.
-      </p>
+  body{
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+    font-size: clamp(1rem, 0.94rem + 0.3vw, 1.125rem);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .mono{ font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; }
+
+  a{ color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  a:hover{ color: var(--accent-2); }
+  a:focus-visible, button:focus-visible, input:focus-visible{
+    outline: 2px solid var(--accent-2);
+    outline-offset: 3px;
+  }
+
+  .skip-link{
+    position: absolute; left: -999px; top: 0;
+    background: var(--ink); color: var(--paper); padding: 0.75rem 1rem; z-index: 100;
+  }
+  .skip-link:focus{ left: var(--gutter); top: var(--gutter); }
+
+  .wrap{ max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+  .wrap-wide{ max-width: 920px; margin: 0 auto; padding: 0 var(--gutter); }
+
+  /* ---------- Masthead ---------- */
+  header.masthead{
+    padding: clamp(2.5rem, 6vw, 4.5rem) var(--gutter) 0;
+    text-align: center;
+    animation: fade-in 0.6s ease-out;
+  }
+  @keyframes fade-in{ from{ opacity: 0; transform: translateY(4px);} to{ opacity: 1; transform: none; } }
+
+  .kicker{
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .masthead-name{
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(2.4rem, 6vw + 0.5rem, 4.6rem);
+    letter-spacing: -0.01em;
+    margin: 0.5rem 0 0.6rem;
+  }
+
+  .masthead-tagline{
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin: 0 0 1.6rem;
+  }
+
+  .rule-heavy{ border: 0; border-top: 3px solid var(--ink); margin: 0; }
+  .rule-light{ border: 0; border-top: 1px solid var(--rule); margin-top: 3px; }
+  .rule{ border: 0; border-top: 1px solid var(--rule); margin: 0; }
+
+  nav.masthead-nav{
+    display: flex; justify-content: center; flex-wrap: wrap;
+    gap: clamp(1rem, 3vw, 2.2rem);
+    padding: 0.9rem var(--gutter);
+  }
+  nav.masthead-nav a{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 0.25rem 0.1rem;
+    border-bottom: 1px solid transparent;
+  }
+  nav.masthead-nav a:hover{ color: var(--accent-2); border-bottom-color: var(--accent-2); }
+
+  /* ---------- Sections ---------- */
+  section{ padding: clamp(2.6rem, 6vw, 4.5rem) 0; }
+  section + section{ border-top: 1px solid var(--rule); }
+
+  .eyebrow{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin: 0 0 0.8rem;
+  }
+
+  h2.headline{
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(1.6rem, 3vw + 0.6rem, 2.3rem);
+    line-height: 1.2;
+    margin: 0 0 1.4rem;
+    max-width: 20ch;
+  }
+
+  /* Lead / About */
+  .lead p{ margin: 0 0 1.1rem; color: var(--ink); }
+  .lead p:first-of-type::first-letter{
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 900;
+    font-size: 3.4rem;
+    float: left;
+    line-height: 0.8;
+    padding: 0.1rem 0.35rem 0 0;
+    color: var(--accent);
+  }
+
+  /* Writing / Dispatches */
+  .dispatch-list{ list-style: none; margin: 0; padding: 0; }
+  .dispatch{
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--rule);
+    align-items: baseline;
+  }
+  .dispatch:first-child{ border-top: none; }
+  .dispatch time{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.03em;
+  }
+  .dispatch a{
+    font-family: "Source Serif 4", serif;
+    font-size: 1.05rem;
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .dispatch a:hover{ border-bottom-color: var(--accent-2); }
+  .dispatch .outlet{
+    display: block;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+    margin-top: 0.25rem;
+    letter-spacing: 0.04em;
+  }
+
+  .more-link{
+    display: inline-block;
+    margin-top: 1.6rem;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+  }
+
+  /* Focus tiles */
+  .focus-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.2rem, 3vw, 2rem);
+    margin-top: 1.8rem;
+  }
+  @media (max-width: 680px){ .focus-grid{ grid-template-columns: 1fr; } }
+  .focus-tile{ padding-top: 1rem; border-top: 2px solid var(--ink); }
+  .focus-tile h3{
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin: 0 0 0.5rem;
+  }
+  .focus-tile p{ margin: 0; color: var(--ink-muted); font-size: 0.96rem; }
+
+  /* ---------- Contact / Seal ---------- */
+  .seal{
+    margin-top: 1.8rem;
+    padding: clamp(1.4rem, 4vw, 2.2rem);
+    background: var(--paper-deep);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+  }
+  .seal-label{
+    display: block;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.9rem;
+  }
+  input[type="range"]{
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 2px;
+    background: var(--ink-faint);
+    outline-offset: 6px;
+    margin: 1.2rem 0;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--accent-2);
+    border: 3px solid var(--paper-deep);
+    box-shadow: 0 0 0 1px var(--accent-2);
+    cursor: grab;
+  }
+  input[type="range"]::-moz-range-thumb{
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent-2);
+    border: 3px solid var(--paper-deep);
+    box-shadow: 0 0 0 1px var(--accent-2);
+    cursor: grab;
+  }
+  input[type="range"]::-moz-range-track{ background: var(--ink-faint); height: 2px; }
+  input[type="range"]:disabled::-webkit-slider-thumb{ background: var(--accent); cursor: default; }
+  input[type="range"]:disabled::-moz-range-thumb{ background: var(--accent); cursor: default; }
+
+  .seal-hint{ font-size: 0.85rem; color: var(--ink-faint); margin: 0; }
+
+  .seal-result{
+    margin-top: 1.4rem;
+    padding-top: 1.2rem;
+    border-top: 1px dashed var(--rule);
+  }
+  .seal-result[hidden]{ display: none; }
+  .email-reveal{
+    font-size: 1.15rem;
+    letter-spacing: 0.02em;
+    user-select: all;
+    margin: 0 0 1rem;
+  }
+  .seal-actions{ display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: center; }
+  .btn{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid var(--ink);
+    padding: 0.65rem 1.1rem;
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: var(--radius);
+  }
+  .btn:hover{ background: var(--accent-2); border-color: var(--accent-2); }
+  .btn.ghost{ background: transparent; color: var(--ink); }
+  .btn.ghost:hover{ color: var(--accent-2); border-color: var(--accent-2); background: transparent; }
+
+  .fallback-contact{ margin-top: 1.1rem; font-size: 0.9rem; color: var(--ink-muted); }
+
+  /* ---------- Footer ---------- */
+  footer{ padding: clamp(2rem, 5vw, 3rem) 0 3rem; }
+  .footer-links{
+    display: flex; flex-wrap: wrap; gap: 1.4rem;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+    margin-bottom: 1rem;
+  }
+  .footer-links a{ text-decoration: none; border-bottom: 1px solid var(--rule); }
+  .footer-links a:hover{ border-bottom-color: var(--accent-2); }
+  .footer-meta{ font-size: 0.78rem; color: var(--ink-faint); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <p class="kicker">Vol. I - Est. 2023</p>
+  <h1 class="masthead-name">Subigya Ghimire</h1>
+  <p class="masthead-tagline">Security Research · Privacy · Systems Thinking</p>
+</header>
+<hr class="rule-heavy">
+<hr class="rule-light">
+
+<nav class="masthead-nav" aria-label="Section navigation">
+  <a href="#about">About</a>
+  <a href="#writing">Writing</a>
+  <a href="#focus">Disciplines</a>
+  <a href="#contact">Contact</a>
+  <a href="https://github.com/gsubigya" rel="me noopener noreferrer" target="_blank">GitHub ↗</a>
+</nav>
+<hr class="rule">
+
+<main id="main">
+
+  <section id="about" class="wrap">
+    <p class="eyebrow">Profile</p>
+    <h2 class="headline">On breaking things to understand them</h2>
+    <div class="lead">
+      <p>I study how systems fail, and how to make them fail more gracefully. My focus sits across penetration testing, red teaming, OSINT, and threat detection the practical edges of cybersecurity, where curiosity meets discipline.</p>
+      <p>The goal isn't just to break things. It's to understand them well enough to explain the failure clearly, and help build something sturdier in its place. This site is a short, deliberately quiet record of that work details are shared on my own terms, not left lying around for anyone to scrape.</p>
+    </div>
+  </section>
+
+  <section id="writing" class="wrap">
+    <p class="eyebrow">Dispatches</p>
+    <h2 class="headline">Selected writing, published elsewhere</h2>
+    <ul class="dispatch-list">
+      <li class="dispatch">
+        <time datetime="2026-02-01">Feb 2026</time>
+        <div>
+          <a href="https://techpana.com/2026/155198/phone-location-can-be-tracked-even-when-gps-is-off" rel="noopener noreferrer" target="_blank">GPS off? Your phone can still be tracked.</a>
+          <span class="outlet">TechPana</span>
+        </div>
+      </li>
+      <li class="dispatch">
+        <time datetime="2025-06-16">Jun 2025</time>
+        <div>
+          <a href="https://medium.com/@subigya.com/the-dark-side-of-chat-apps-how-hackers-use-telegram-discord-to-control-infected-devices-cf39919da4c3" rel="noopener noreferrer" target="_blank">The Dark Side of Chat Apps: C2</a>
+          <span class="outlet">Medium</span>
+        </div>
+      </li>
+      <li class="dispatch">
+        <time datetime="2025-06-12">Jun 2025</time>
+        <div>
+          <a href="https://medium.com/@subigya.com/how-qr-codes-are-the-new-phishing-attack-vector-and-how-hackers-use-them-to-trick-you-6194ffbdd286" rel="noopener noreferrer" target="_blank">How QR Codes Are the New Phishing Attack Vector</a>
+          <span class="outlet">Medium</span>
+        </div>
+      </li>
+      <li class="dispatch">
+        <time datetime="2025-05-21">May 2025</time>
+        <div>
+          <a href="https://medium.com/@subigya.com/are-phone-and-laptop-repair-shops-spying-on-us-heres-what-i-found-after-testing-it-myself-0d61496b629c" rel="noopener noreferrer" target="_blank">Are Repair Shops Spying On Us?</a>
+          <span class="outlet">Medium</span>
+        </div>
+      </li>
+    </ul>
+    <a class="more-link" href="https://medium.com/@subigya.com" rel="me noopener noreferrer" target="_blank">More writing on Medium →</a>
+  </section>
+
+  <section id="focus" class="wrap">
+    <p class="eyebrow">Disciplines</p>
+    <h2 class="headline">Where the work happens</h2>
+    <div class="focus-grid">
+      <div class="focus-tile">
+        <h3>Penetration Testing</h3>
+        <p>Simulating real attack paths against systems and applications to find what an adversary would find first.</p>
+      </div>
+      <div class="focus-tile">
+        <h3>OSINT</h3>
+        <p>Mapping what's publicly discoverable about a target, and what that exposure actually enables.</p>
+      </div>
+      <div class="focus-tile">
+        <h3>Red Teaming &amp; Detection</h3>
+        <p>Testing defenses from the attacker's side, and building detection that holds up from the defender's.</p>
+      </div>
+    </div>
+    <a class="more-link" href="https://github.com/gsubigya" rel="me noopener noreferrer" target="_blank">Selected work on GitHub →</a>
+  </section>
+
+  <section id="contact" class="wrap">
+    <p class="eyebrow">Contact</p>
+    <h2 class="headline">Get in touch</h2>
+    <p>This inbox is real, so it isn't printed in plain text on the page. Slide to verify and it unlocks copyable, no forms, nothing stored.</p>
+
+    <div class="seal">
+      <label class="seal-label" for="verify-slider">Slide to break the seal →</label>
+      <input type="range" id="verify-slider" min="0" max="100" value="0" step="1"
+             aria-describedby="seal-hint" aria-valuetext="Not verified">
+      <p class="seal-hint" id="seal-hint">A quick human check keeps the address off scraper lists.</p>
+
+      <div class="seal-result" id="seal-result" hidden>
+        <p class="mono email-reveal" id="email-reveal"></p>
+        <div class="seal-actions">
+          <button type="button" class="btn" id="copy-email">Copy address</button>
+          <a class="btn ghost" id="mail-link" href="#">Open in mail app →</a>
+        </div>
+      </div>
     </div>
 
-    <div class="featured">
-      <h2>Featured</h2>
-      <div class="post">
-        <span class="post-date">February 01, 2026</span>
-        <a
-          class="post-title"
-          href="https://techpana.com/2026/155198/phone-location-can-be-tracked-even-when-gps-is-off"
-        >
-          GPS off? Your phone can still be tracked.</a
-        >
-      </div>
-      <div class="post">
-        <span class="post-date">May 21, 2025</span>
-        <a
-          class="post-title"
-          href="https://medium.com/@subigya.com/are-phone-and-laptop-repair-shops-spying-on-us-heres-what-i-found-after-testing-it-myself-0d61496b629c"
-        >
-          Are Repair Shops Spying on us?</a
-        >
-      </div>
-      <div class="post">
-        <span class="post-date">June 12, 2025</span>
-        <a
-          class="post-title"
-          href="https://medium.com/@subigya.com/how-qr-codes-are-the-new-phishing-attack-vector-and-how-hackers-use-them-to-trick-you-6194ffbdd286"
-          >How QR Codes are the New Phishing Attack Vector.</a
-        >
-      </div>
-      <div class="post">
-        <span class="post-date">June 16, 2025</span>
-        <a
-          class="post-title"
-          href="https://medium.com/@subigya.com/the-dark-side-of-chat-apps-how-hackers-use-telegram-discord-to-control-infected-devices-cf39919da4c3"
-          >The Dark Side of Chat Apps: C2</a
-        >
-      </div>
-    </div>
+    <noscript>
+      <p class="fallback-contact">JavaScript is off, so the verification step can't run. Reach me instead via <a href="https://www.linkedin.com/in/subigya-ghimire/" rel="me noopener noreferrer" target="_blank">LinkedIn</a> or <a href="https://github.com/gsubigya" rel="me noopener noreferrer" target="_blank">GitHub</a>.</p>
+    </noscript>
+  </section>
 
-    <div class="footer">
-      <a
-        href="https://github.com/gsubigya"
-        target="_blank"
-        rel="noopener noreferrer"
-        >↗ Github</a
-      >
-      <a
-        href="https://linkedin.com/in/subigya-ghimire"
-        target="_blank"
-        rel="noopener noreferrer"
-        >↗ Linkedin</a
-      >
-      <a href="mailto:dev@subigya.com">↗ Mail</a>
+</main>
 
-      <a
-  href="https://subigya.com/schedule"
-  target="_blank"
-  rel="noopener noreferrer"
-  class="schedule-btn"
->
-  ↗ Schedule a Meeting
-</a>
+<hr class="rule">
+<footer class="wrap">
+  <div class="footer-links">
+    <a href="https://github.com/gsubigya" rel="me noopener noreferrer" target="_blank">GitHub</a>
+    <a href="https://www.linkedin.com/in/subigya-ghimire/" rel="me noopener noreferrer" target="_blank">LinkedIn</a>
+    <a href="https://medium.com/@subigya.com" rel="me noopener noreferrer" target="_blank">Medium</a>
+  </div>
+  <p class="footer-meta mono">© 2026 Subigya Ghimire. No analytics, no ad scripts, no tracking pixels on this page.</p>
+</footer>
 
-      <br /><br />
-      © 2025 Subigya Ghimire
-    </div>
-  </body>
+<script src="script.js" defer></script>
+
+</body>
 </html>
