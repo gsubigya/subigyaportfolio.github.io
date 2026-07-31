@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://subigya.com/sitemap.xml
