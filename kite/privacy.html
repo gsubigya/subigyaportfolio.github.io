@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kite | Minimalist, Distraction Free Launcher</title>
+<style>
+  :root{
+    --black:#0a0a0a;
+    --white:#f5f5f5;
+    --gray:#8a8a8a;
+    --border:rgba(245,245,245,0.12);
+  }
+
+  *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+  }
+
+  body{
+    background:var(--black);
+    color:var(--white);
+    font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    min-height:100vh;
+  }
+
+  .container{
+    max-width:900px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  header{
+    text-align:center;
+    padding:130px 24px 80px;
+  }
+
+  h1{
+    font-size:clamp(3rem, 8vw, 5.5rem);
+    font-weight:800;
+    letter-spacing:-0.03em;
+    line-height:1;
+    color:var(--white);
+  }
+
+  .tagline{
+    margin-top:18px;
+    font-size:clamp(1rem, 2.4vw, 1.3rem);
+    color:var(--gray);
+    font-weight:400;
+    letter-spacing:0.01em;
+  }
+
+  .divider{
+    width:64px;
+    height:1px;
+    background:var(--white);
+    margin:36px auto 0;
+    opacity:0.3;
+  }
+
+  section{
+    padding:56px 24px;
+  }
+
+  .data-block{
+    text-align:center;
+    max-width:560px;
+    margin:0 auto;
+  }
+
+  .data-block h2{
+    font-size:clamp(1.6rem, 3.5vw, 2.4rem);
+    font-weight:700;
+    letter-spacing:-0.01em;
+    margin-bottom:16px;
+  }
+
+  .data-block p{
+    color:var(--gray);
+    font-size:1.05rem;
+    line-height:1.7;
+  }
+
+  .policy-section{
+    text-align:center;
+    padding-top:20px;
+    border-top:1px solid var(--border);
+  }
+
+  .policy-section h3{
+    font-size:clamp(1.3rem, 2.8vw, 1.8rem);
+    font-weight:700;
+    margin-bottom:14px;
+    letter-spacing:-0.01em;
+  }
+
+  .policy-section p{
+    color:var(--gray);
+    font-size:1rem;
+    line-height:1.8;
+    max-width:600px;
+    margin:0 auto 8px;
+  }
+
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-top:22px;
+    padding:8px 20px;
+    border:1px solid var(--border);
+    border-radius:999px;
+    font-size:0.85rem;
+    color:var(--gray);
+    letter-spacing:0.02em;
+  }
+
+  .badge-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--white);
+  }
+
+  .contact-section{
+    text-align:center;
+    padding-top:20px;
+    border-top:1px solid var(--border);
+  }
+
+  .contact-section p{
+    color:var(--gray);
+    font-size:0.95rem;
+    margin-bottom:10px;
+    letter-spacing:0.01em;
+  }
+
+  .contact-section a{
+    color:var(--white);
+    font-size:clamp(1.1rem, 2.6vw, 1.4rem);
+    font-weight:600;
+    text-decoration:none;
+    letter-spacing:-0.01em;
+    border-bottom:1px solid transparent;
+  }
+
+  .contact-section a:hover{
+    border-color:var(--white);
+  }
+
+  footer{
+    text-align:center;
+    padding:48px 24px 60px;
+    color:var(--gray);
+    font-size:0.85rem;
+    letter-spacing:0.02em;
+    border-top:1px solid var(--border);
+    margin-top:20px;
+  }
+
+  footer span{
+    color:var(--white);
+    font-weight:600;
+  }
+
+  @media (max-width:600px){
+    header{padding:90px 20px 56px;}
+    section{padding:40px 20px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Kite</h1>
+  <p class="tagline">Minimalist, Distraction free launcher.</p>
+  <div class="divider"></div>
+</header>
+
+<div class="container">
+  <section>
+    <div class="data-block">
+      <h2>We don't take your data.</h2>
+      <p>What is yours is yours. Kite is built to stay out of your way and out of your business, no tracking, no collection, no compromises.</p>
+    </div>
+  </section>
+
+  <section class="policy-section">
+    <h3>Privacy Policy</h3>
+    <p>Our full privacy policy is currently being crafted with the same care and attention we put into Kite itself.</p>
+    <p>We want every word to be clear, honest, and worth your time to read.</p>
+    <div class="badge">
+      <span class="badge-dot"></span>
+      Full privacy policy coming soon
+    </div>
+  </section>
+
+  <section class="contact-section">
+    <p>Have a question or feedback? Reach out anytime.</p>
+    <a href="mailto:kite@subigya.com">kite@subigya.com</a>
+  </section>
+</div>
+
+<footer>
+  &copy; 2026 <span>Kite</span>. All rights reserved.
+</footer>
+
+</body>
+</html>
