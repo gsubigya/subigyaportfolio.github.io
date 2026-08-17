@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kite, a minimalist Android launcher</title>
+<meta name="description" content="Kite is a minimalist, distraction free launcher for Android. Pure black, pure white, and nothing else. No ads, no trackers, no data collected.">
+<meta name="theme-color" content="#000000">
+<meta property="og:title" content="Kite, a minimalist Android launcher">
+<meta property="og:description" content="Pure black, pure white, and nothing else. No ads, no trackers, no data collected.">
+<meta property="og:type" content="website">
+<style>
+  :root {
+    --black: #000000;
+    --white: #ffffff;
+    --dim: rgba(255,255,255,0.55);
+    --faint: rgba(255,255,255,0.28);
+    --hair: rgba(255,255,255,0.2);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--black);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+
+  a {
+    color: var(--white);
+    text-decoration-color: var(--faint);
+    text-underline-offset: 3px;
+  }
+
+  a:hover, a:focus-visible {
+    text-decoration-color: var(--white);
+  }
+
+  a:focus-visible, button:focus-visible {
+    outline: 1px solid var(--white);
+    outline-offset: 3px;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 clamp(20px, 5vw, 32px);
+  }
+
+  /* header */
+
+  header {
+    padding-top: clamp(28px, 5vw, 40px);
+  }
+
+  .header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: clamp(17px, 3vw, 20px);
+    gap: 16px;
+  }
+
+  .mark {
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .header-links {
+    display: flex;
+    gap: clamp(14px, 3vw, 22px);
+    font-size: clamp(13px, 2.4vw, 14px);
+    color: var(--dim);
+  }
+
+  .header-links a { color: var(--dim); }
+  .header-links a:hover, .header-links a:focus-visible { color: var(--white); }
+
+  /* hero */
+
+  .hero {
+    padding: clamp(56px, 12vw, 104px) 0 clamp(40px, 8vw, 56px);
+    text-align: center;
+  }
+
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin: 0 0 20px;
+  }
+
+  h1 {
+    font-weight: 300;
+    font-size: clamp(2.2rem, 8vw, 3.8rem);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 0 0 20px;
+  }
+
+  .lede {
+    font-size: clamp(15px, 2.6vw, 17px);
+    color: var(--dim);
+    max-width: 46ch;
+    margin: 0 auto 40px;
+  }
+
+  /* buttons */
+
+  .cta-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .download-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--white);
+    color: var(--black);
+    font-size: clamp(15px, 2.6vw, 16px);
+    font-weight: 500;
+    text-decoration: none;
+    padding: 16px 32px;
+    border-radius: 999px;
+    min-height: 44px;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .download-button:hover, .download-button:focus-visible {
+    background: rgba(255,255,255,0.88);
+  }
+
+  .cta-meta {
+    font-size: 13px;
+    color: var(--faint);
+  }
+
+  .clock-glyph {
+    font-size: clamp(3rem, 16vw, 4.5rem);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    color: var(--faint);
+    margin: clamp(40px, 8vw, 64px) 0 0;
+  }
+
+  /* privacy strip */
+
+  .privacy-strip {
+    border-top: 1px solid var(--hair);
+    border-bottom: 1px solid var(--hair);
+    padding: clamp(24px, 5vw, 32px) 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px 24px;
+    text-align: center;
+  }
+
+  .privacy-strip p {
+    margin: 0;
+    font-size: clamp(14px, 2.4vw, 15px);
+    color: var(--dim);
+  }
+
+  .privacy-strip a {
+    font-size: clamp(14px, 2.4vw, 15px);
+    white-space: nowrap;
+  }
+
+  /* features */
+
+  main {
+    padding: clamp(48px, 9vw, 72px) 0;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  @media (min-width: 560px) {
+    .features {
+      grid-template-columns: 1fr 1fr;
+      gap: 0 32px;
+    }
+  }
+
+  .feature {
+    border-top: 1px solid var(--hair);
+    padding: clamp(28px, 5vw, 36px) 0;
+  }
+
+  .feature h2 {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--dim);
+    font-weight: 500;
+    margin: 0 0 14px;
+  }
+
+  .feature p {
+    font-size: clamp(15px, 2.6vw, 16px);
+    margin: 0;
+  }
+
+  /* install note */
+
+  .install-note {
+    border-top: 1px solid var(--hair);
+    padding: clamp(40px, 8vw, 56px) 0;
+  }
+
+  .install-note h2 {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--dim);
+    font-weight: 500;
+    margin: 0 0 16px;
+  }
+
+  .install-note p {
+    font-size: clamp(15px, 2.6vw, 16px);
+    margin: 0 0 14px;
+  }
+
+  .install-note p:last-child {
+    margin-bottom: 0;
+  }
+
+  .install-note ol {
+    margin: 0 0 14px;
+    padding-left: 20px;
+  }
+
+  .install-note li {
+    font-size: clamp(15px, 2.6vw, 16px);
+    margin-bottom: 8px;
+  }
+
+  .install-note li:last-child {
+    margin-bottom: 0;
+  }
+
+  /* bottom cta */
+
+  .bottom-cta {
+    border-top: 1px solid var(--hair);
+    padding: clamp(48px, 9vw, 72px) 0;
+    text-align: center;
+  }
+
+  .bottom-cta h2 {
+    font-weight: 300;
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
+    margin: 0 0 32px;
+  }
+
+  /* footer */
+
+  footer {
+    border-top: 1px solid var(--hair);
+    padding: clamp(28px, 6vw, 40px) 0 clamp(48px, 9vw, 64px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+  }
+
+  .signature {
+    font-size: 13px;
+    color: var(--dim);
+  }
+
+  .footer-links {
+    font-size: 12px;
+    color: var(--faint);
+    display: flex;
+    gap: 16px;
+    margin-top: 4px;
+  }
+
+  .footer-links a { color: var(--faint); }
+  .footer-links a:hover, .footer-links a:focus-visible { color: var(--dim); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="header-row">
+      <span class="mark">Kite | Minimalist, Distraction Free Launcher</span>
+      <div class="header-links">
+        <a href="privacy.html">Privacy</a>
+        <a href="https://subigya.com">subigya.com</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="hero">
+    <p class="eyebrow">Kite for Android</p>
+    <h1>A calm<br>home screen.</h1>
+    <p class="lede">Kite is a minimalist, distraction free launcher. Pure black, pure white, and nothing else. No ads, no trackers, no data taken from your phone, ever.</p>
+
+    <div class="cta-row">
+      <a class="download-button" href="./kite.apk" download>Download Kite</a>
+      <p class="cta-meta">Free. Android 8.0 or higher. No account needed.</p>
+    </div>
+
+    <p class="clock-glyph">9:41 AM</p>
+  </div>
+
+  <div class="privacy-strip">
+    <p>Kite does not collect any of your data.</p>
+    <a href="privacy.html">Read the full privacy policy</a>
+  </div>
+
+  <main>
+
+    <div class="features">
+
+      <div class="feature">
+        <h2>Text only app list</h2>
+        <p>Just the names of your apps, nothing else. No icons, no folders, no widgets to get in the way.</p>
+      </div>
+
+      <div class="feature">
+        <h2>One search field</h2>
+        <p>Type a few letters and find any app on your phone in seconds, instead of scrolling to find it.</p>
+      </div>
+
+      <div class="feature">
+        <h2>A screen that stays calm</h2>
+        <p>Your home screen shows only the time. Nothing to tap by accident. Swipe up whenever you actually need your apps.</p>
+      </div>
+
+      <div class="feature">
+        <h2>No ads, no tracking</h2>
+        <p>Kite has no servers and collects nothing. What happens on your phone stays on your phone.</p>
+      </div>
+
+    </div>
+
+    <div class="install-note">
+      <h2>How to install</h2>
+      <p>Kite is not on the Play Store, so your phone will ask you to allow installing it. This is normal for any app installed outside the store.</p>
+      <ol>
+        <li>Tap the download button above to save the APK file.</li>
+        <li>Open the downloaded file from your notifications or Downloads folder.</li>
+        <li>If asked, allow your browser or file manager to install unknown apps, then confirm the install.</li>
+      </ol>
+      <p>Kite never asks for anything beyond what it needs to run as your launcher. Nothing is collected during or after installation.</p>
+    </div>
+
+  </main>
+
+  <div class="bottom-cta">
+    <h2>Ready when you are.</h2>
+    <div class="cta-row">
+      <a class="download-button" href="./kite.apk" download>Download Kite</a>
+      <p class="cta-meta">Questions or bugs? Write to kite@subigya.com</p>
+    </div>
+  </div>
+
+  <footer>
+    <p class="signature">Made in Nepal by Subigya</p>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="mailto:kite@subigya.com">kite@subigya.com</a>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>
